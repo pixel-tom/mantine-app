@@ -30,7 +30,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           <Head>
             <title>Scoop</title>
           </Head>
-          <div style={{ display: 'flex', height: '100vh', backgroundColor: '#010100' }}>
+          <div style={{ display: 'flex', height: '100vh', backgroundColor: '#24292d' }}>
             <Navbar onAccountSelect={handleAccountSelect} />
             <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, height: '100vh' }}>
               <Header />

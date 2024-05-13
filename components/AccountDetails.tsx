@@ -17,9 +17,6 @@ import {
   Group,
 } from "@mantine/core";
 import {
-  IconSettings,
-  IconSearch,
-  IconPhoto,
   IconMessageCircle,
   IconTrash,
   IconArrowsLeftRight,
@@ -359,12 +356,6 @@ const AccountDetails: React.FC<{ publicKey: string }> = ({ publicKey }) => {
                   <IoIosList className="text-gray-200 h-6 w-6" />
                 </button>
               </div>
-              {/* <button
-                onClick={refreshFiles}
-                className="ml-8 py-2 px-3 rounded border border-[#4c5458]"
-              >
-                <FiRefreshCw className="text-gray-200 h-4 w-4" />
-              </button> */}
             </div>
             <div className="ml-6">
               <Upload selectedAccount={publicKey} />
@@ -372,7 +363,11 @@ const AccountDetails: React.FC<{ publicKey: string }> = ({ publicKey }) => {
           </div>
         </div>
 
-        {viewMode === "grid" ? (
+        {files.length === 0 ? (
+          <div className="flex items-center justify-center h-32 text-gray-500">
+            Storage Account is empty. Upload files to get started.
+          </div>
+        ) : viewMode === "grid" ? (
           <div style={gridStyle} className="grid gap-4 mt-4">
             {files.map((file, index) => (
               <FileCard

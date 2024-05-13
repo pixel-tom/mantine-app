@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useEffect } from "react";
+import React, { useState, Suspense } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import Toast from "@/components/Toast";
 import StorageAccountItem from "./StorageAccountItem";
@@ -82,10 +82,10 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
   const SkeletonLoader = () => {
     return (
       <div className="animate-pulse space-y-4">
-        <div className="h-14 bg-gray-700 rounded w-full"></div>
-        <div className="h-14 bg-gray-700 rounded w-full"></div>
-        <div className="h-14 bg-gray-700 rounded w-full"></div>
-        <div className="h-14 bg-gray-700 rounded w-full"></div>
+        <div className="h-14 bg-gray-800 rounded w-full"></div>
+        <div className="h-14 bg-gray-800 rounded w-full"></div>
+        <div className="h-14 bg-gray-800 rounded w-full"></div>
+        <div className="h-14 bg-gray-800 rounded w-full"></div>
       </div>
     );
   };
@@ -94,12 +94,22 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
     return <div><SkeletonLoader /></div>;
   }
 
+  if (!wallet.connected) {
+    return (
+      <div className="flex flex-col items-center text-center h-full">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-8">
+          Connect your wallet to view your accounts
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex flex-col`}>
       <div className="flex-1 rounded-lg dark:text-gray-300">
         <div>
           {accounts.length > 0 ? (
-            <ul className="mx-2">
+            <ul>
               {accounts.map((account, index) => (
                 <Suspense
                   key={account.publicKey.toBase58()}
@@ -116,7 +126,11 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
               ))}
             </ul>
           ) : (
-            <SkeletonLoader />
+            <div className="flex flex-col items-center text-center h-full">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-8">
+                Create a Storage Account to get started
+              </p>
+            </div>
           )}
         </div>
       </div>
