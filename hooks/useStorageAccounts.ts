@@ -49,6 +49,8 @@ const useStorageAccounts = () => {
     };
   }, [connection, wallet]);
 
+  console.log(accounts)
+
   return { accounts, setAccounts, isLoading };
 };
 

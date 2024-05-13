@@ -3,6 +3,7 @@ import CreateStorageAccount from '@/components/CreateStorageAccount';
 import StorageAccounts from '@/components/Drives';
 import SwapInterface from '@/components/SwapInterface';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 interface NavbarProps {
   onAccountSelect: (publicKey: string) => void;
@@ -16,6 +17,8 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
     transition: 'max-height 0.5s ease, opacity 0.5s ease',
     overflow: 'hidden'
   });
+  const router = useRouter();
+
 
   useEffect(() => {
     if (isSwapVisible) {
@@ -49,8 +52,8 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
         color: '#fff',
       }}
     >
-      <div className='flex space-x-1 mb-10'>
-        <Image src={'/scoop-logo.svg'} alt={''} height={50} width={50}></Image>
+      <div onClick={() => {router.push(`/`)}} className='flex space-x-1 mb-10'>
+        <Image src={'/scoop-logo.svg'} alt={''} height={50} width={50} ></Image>
         <h1 className='font-bold text-4xl'>Scoop</h1>
       </div>
       
@@ -58,7 +61,8 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
         <h1 className='font-semibold text-gray-200'>My Drives</h1>
         <CreateStorageAccount />
       </div>
-      <div className="flex-grow overflow-y-auto">
+      <hr className='mx-auto w-11/12 border-gray-700'/>
+      <div className="flex-grow overflow-y-auto mt-3">
         <StorageAccounts onAccountSelect={onAccountSelect} />
       </div>
       <div className="mt-auto">

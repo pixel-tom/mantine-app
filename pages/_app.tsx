@@ -34,7 +34,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             <Navbar onAccountSelect={handleAccountSelect} />
             <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, height: '100vh' }}>
               <Header />
-              <main className='overflow-auto p-6' style={{ flexGrow: 1, backgroundColor: '#24292d' }}>
+              <main className='overflow-auto py-2 px-6' style={{ flexGrow: 1, backgroundColor: '#24292d' }}>
                 <Component {...pageProps} />
               </main>
             </div>
