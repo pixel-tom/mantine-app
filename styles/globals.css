@@ -16,18 +16,15 @@
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.wallet-adapter-button-trigger{
+  background-color: #363b3e !important;
+  border: 1px solid #222222  !important;
+  color: white !important;
+  border-radius: 10px !important;
 }
