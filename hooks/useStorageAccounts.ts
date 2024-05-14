@@ -7,6 +7,7 @@ const useStorageAccounts = () => {
   const { drive, connection } = useSHDWDrive();
   const [accounts, setAccounts] = useState<{ publicKey: PublicKey; details?: any }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false); // Add a flag to indicate if accounts have been fetched
 
   const loadStorageAccounts = useCallback(async () => {
     if (drive) {
@@ -30,6 +31,7 @@ const useStorageAccounts = () => {
         );
       
         setAccounts(accountsWithDetails);
+        setHasFetched(true); // Set the flag to indicate accounts have been fetched
       } catch (error: any) {
         console.error("Error fetching storage accounts:", error.message);
         setAccounts([]); // Ensure accounts is set to an empty array on error
@@ -40,10 +42,10 @@ const useStorageAccounts = () => {
   }, [drive]);
 
   useEffect(() => {
-    if (drive && connection) {
+    if (drive && !hasFetched) {
       loadStorageAccounts();
     }
-  }, [loadStorageAccounts, connection, drive]);
+  }, [drive, hasFetched, loadStorageAccounts]); // Include hasFetched to prevent re-fetching
 
   const throttledLog = useMemo(() => debounce((accounts: any) => {
     console.log(accounts);
