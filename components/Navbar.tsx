@@ -67,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
       <div className="mt-auto">
         <button
           onClick={toggleSwapVisibility}
-          className="w-full  text-white py-2 rounded-md hover:border-gray-600 transition"
+          className="w-full font-semibold text-sm text-gray-400 rounded-md hover:border-gray-600 transition"
         >
           {isSwapVisible ? 'Hide' : 'Need $SHDW?'}
         </button>

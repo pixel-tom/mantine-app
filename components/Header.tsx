@@ -25,7 +25,7 @@ const Header: React.FC = () => {
           placeholder="Search for Account by Address.."
           value={inputText}
           onChange={handleInputChange}
-          className="w-full py-2 px-5 bg-[#181c20] rounded-md"
+          className="w-full py-2 text-sm px-5 bg-[#181c20] rounded-md"
         />
         <button 
           type="submit" 

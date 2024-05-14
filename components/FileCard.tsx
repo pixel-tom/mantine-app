@@ -86,7 +86,7 @@ const FileCard: React.FC<FileCardProps> = ({
   };
 
   return (
-    <div className="border border-[#cbcbcb] dark:border-[#3b3b3b] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-[#ededed] dark:bg-[#292e31]">
+    <div className="fade-in border border-[#cbcbcb] dark:border-[#3b3b3b] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-[#ededed] dark:bg-[#292e31]">
       <div
         className={`flex justify-center items-center overflow-hidden bg-[#363b3e]`}
         style={{ height: height }}

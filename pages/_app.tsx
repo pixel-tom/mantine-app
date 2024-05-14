@@ -23,6 +23,8 @@ const App = ({ Component, pageProps }: AppProps) => {
     setSelectedAccount(publicKey);
   };
 
+  const navbarWidth = '380px';
+
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider autoConnect={true}>
@@ -30,9 +32,11 @@ const App = ({ Component, pageProps }: AppProps) => {
           <Head>
             <title>Scoop</title>
           </Head>
-          <div style={{ display: 'flex', height: '100vh', backgroundColor: '#24292d' }}>
-            <Navbar onAccountSelect={handleAccountSelect} />
-            <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, height: '100vh' }}>
+          <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', backgroundColor: '#24292d' }}>
+            <div style={{ width: navbarWidth }}>
+              <Navbar onAccountSelect={handleAccountSelect} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, height: '100vh', width: `calc(100vw - ${navbarWidth})` }}>
               <Header />
               <main className='overflow-auto py-2 px-6' style={{ flexGrow: 1, backgroundColor: '#24292d' }}>
                 <Component {...pageProps} />

@@ -65,7 +65,7 @@ const ListView: FC<ListViewProps> = ({ files, publicKey }) => {
   }, [files, publicKey]);
 
   return (
-    <div className="w-full mt-4">
+    <div className="w-full mt-4 fade-in">
       <div className="w-full grid grid-cols-12 gap-4 text-left text-sm text-gray-500 font-semibold py-2">
         <div className="col-span-1"></div>
         <div className="col-span-6 px-5">Name</div>
@@ -87,16 +87,21 @@ type FileRowProps = {
 };
 
 const FileRow: FC<FileRowProps> = ({ file, publicKey, index }) => {
+  const [animate, setAnimate] = useState(false);
   const fileUrl = `https://shdw-drive.genesysgo.net/${publicKey}/${file.name}`;
-  const fileType = file.name.includes(".")
-    ? file.name.split(".").pop()
-    : "Unknown";
+  const fileType = file.name.includes(".") ? file.name.split(".").pop() : "Unknown";
+
+  useEffect(() => {
+    setTimeout(() => {
+      setAnimate(true);
+    }, 0); // You can adjust the delay if needed
+  }, []);
 
   return (
     <div
       className={`grid grid-cols-12 gap-4 h-14 items-center p-2 rounded-md mb-2 hover:border hover:border-[#586166] ${
         index % 2 === 0 ? "bg-[#363b3e]" : "bg-[#2f3437]"
-      }`}
+      } ${animate ? 'fade-in' : 'hidden'}`}
     >
       <div className="col-span-2 sm:col-span-1 px-4">
         <a href={fileUrl} target="_blank" rel="noopener noreferrer">
@@ -195,32 +200,44 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const { connection } = useConnection();
   const wallet = useWallet();
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     fetchStorageAccountDetails();
+    setAnimate(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet, connection, publicKey]);
 
   const fetchStorageAccountDetails = async () => {
-    if (wallet && wallet.connected && publicKey) {
+    if (!wallet || !wallet.connected || !publicKey) {
+      console.error("Wallet not connected or public key is invalid.");
+      return;
+    }
+
+    try {
       const drive = new ShdwDrive(connection, wallet);
       await drive.init();
       const pubKey = new PublicKey(publicKey);
+
       const acct = await drive.getStorageAccountInfo(pubKey);
+      if (!acct) {
+        console.error("Failed to retrieve storage account information.");
+        return;
+      }
+
       setAccountDetails(acct);
+
       const listItems = await drive.listObjects(pubKey);
+      if (!listItems || !listItems.keys) {
+        console.error("Failed to retrieve list of objects.");
+        return;
+      }
+
       setFiles(listItems.keys);
       console.log(acct);
       setIsOwner(acct.owner1.toString() === wallet.publicKey?.toString());
-    } else {
-      const drive = new ShdwDrive(connection, wallet);
-      await drive.init();
-      const pubKey = new PublicKey(publicKey);
-      const acct = await drive.getStorageAccountInfo(pubKey);
-      setAccountDetails(acct);
-      const listItems = await drive.listObjects(pubKey);
-      setFiles(listItems.keys);
-      console.log(acct);
+    } catch (error) {
+      console.error("Error fetching storage account details:", error);
     }
   };
 
@@ -263,15 +280,15 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
   };
 
   return (
-    <div className="text-white exo-2 p-4">
+    <div className={`text-white exo-2 p-4 ${animate ? 'fade-in' : 'hidden'}`}>
       <div className="flex flex-row justify-between mb-4 items-center">
         <div className="w-full">
           <div className="flex flex-row justify-between">
-            <p className="font-semibold mt-auto text-2xl px-4">
+            <p className="font-semibold mt-auto text-xl px-4">
               {accountDetails.identifier}
             </p>
             <div className="flex gap-4 text-gray-200">
-              <p className="my-auto text-sm font-bold text-gray-300 mr-3">
+              <p className="my-auto text-sm font-semibold text-gray-300 mr-3">
                 <span className="text-gray-500 text-xs mr-1">Owner</span> {formatAddress(accountDetails.owner1.toString())}
               </p>
               <p className="py-2 px-4 bg-none border border-[#11FA98] text-black text-sm font-semibold rounded-lg shadow-md">
@@ -312,7 +329,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
                   </div>
                 )}
               </p>
-              
+
               <p className="ml-5 mb-2 font-semibold">
                 <FaHardDrive className="h-6 w-6 my-auto text-[#6d787e]" />
               </p>
@@ -335,7 +352,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
           </div>
         </div>
       </div>
-      <div className="border border-[#323b43] shadow overflow-hidden rounded-lg px-6 pt-3">
+      <div className="border border-[#323b43] shadow overflow-hidden rounded-lg px-6 pt-3 fade-in">
         <div className="flex flex-row justify-between pt-2">
           <h4 className="text-lg my-auto mb-2">Files</h4>
           <div className="flex">
@@ -343,7 +360,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
               {viewMode === "grid" && (
                 <Slider
                 color={"#11FA98"}
-              
+
                   defaultValue={4}
                   max={10}
                   min={3}
@@ -377,13 +394,14 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
             Storage Account is empty. Upload files to get started.
           </div>
         ) : viewMode === "grid" ? (
-          <div style={gridStyle} className="grid gap-4 mt-4">
+          <div style={gridStyle} className="grid gap-4 mt-4 fade-in overflow-auto">
             {files.map((file, index) => (
               <FileCard
                 key={index}
                 fileName={file}
                 fileUrl={`https://shdw-drive.genesysgo.net/${publicKey}/${file}`}
                 publicKey={publicKey}
+                
               />
             ))}
           </div>

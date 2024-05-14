@@ -105,7 +105,7 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
   }
 
   return (
-    <div className={`flex flex-col`}>
+    <div className={`fade-in flex flex-col`}>
       <div className="flex-1 rounded-lg dark:text-gray-300">
         <div>
           {accounts.length > 0 ? (
