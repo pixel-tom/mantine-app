@@ -105,7 +105,7 @@ const CreateStorageAccount: React.FC = () => {
     <div>
       <button
         onClick={() => setShowModal(true)}
-        className="pb-1 pt-0 px-3 text-center bg-gradient-to-tr from-[#363b3e] to-[#323232] text-blue-400 border border-blue-400 text-2xl rounded-lg shadow-sm hover:bg-[#303030]"
+        className="pb-1 pt-0 px-3 text-center bg-gradient-to-tr from-[#363b3e] to-[#323232] text-[#11FA98] border border-[#11FA98] text-2xl rounded-lg shadow-sm hover:bg-[#303030]"
       >
         +
       </button>
@@ -122,7 +122,7 @@ const CreateStorageAccount: React.FC = () => {
             >
               <p className="text-white text-2xl">&times;</p>
             </button>
-            <div className="w-full bg-gradient-to-br from-[#996bba] to-[#506ac7] py-10 rounded-t-lg">
+            <div className="w-full bg-gradient-to-br from-[#996bba]/50 to-[#506ac7]/50 py-10 rounded-t-lg">
               <Image
                 src={
                   "https://assets-global.website-files.com/653ae95e36bd81f87299010a/653bfac986a961f71aecfa95_ShdwDrive_Stacked_AllWhite.svg"

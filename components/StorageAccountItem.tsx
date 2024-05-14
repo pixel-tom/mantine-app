@@ -38,7 +38,7 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
         </div>
       </div>
       <div className="flex space-x-3">
-        <p className="px-3 py-1 mr-1 my-auto text-[10px] font-bold rounded-full bg-gradient-to-tr from-[#363b3e] to-[#323232] text-[#8a88ff] shadow-sm">
+        <p className="px-3 py-1 mr-1 my-auto text-[10px] font-bold rounded-full bg-gradient-to-tr from-[#363b3e] to-[#323232] text-blue-200 shadow-sm">
           {formatBytes(account.details.storage.toNumber())}
         </p>
         <Menu

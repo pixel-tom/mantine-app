@@ -24,6 +24,7 @@ import {
 import Image from "next/image";
 import { MdLockOpen, MdLockOutline } from "react-icons/md";
 import { FaHardDrive } from "react-icons/fa6";
+import Create from "./Create";
 
 type FileDetail = {
   name: string;
@@ -262,7 +263,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
   };
 
   return (
-    <div className="text-white exo-2 py-4">
+    <div className="text-white exo-2 p-4">
       <div className="flex flex-row justify-between mb-4 items-center">
         <div className="w-full">
           <div className="flex flex-row justify-between">
@@ -273,7 +274,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
               <p className="my-auto text-sm font-bold text-gray-300 mr-3">
                 <span className="text-gray-500 text-xs mr-1">Owner</span> {formatAddress(accountDetails.owner1.toString())}
               </p>
-              <p className="py-2 px-4 bg-none border border-blue-400 text-black text-sm font-semibold rounded-lg shadow-md">
+              <p className="py-2 px-4 bg-none border border-[#11FA98] text-black text-sm font-semibold rounded-lg shadow-md">
                 {accountDetails.immutable ? (
                   <div className="flex gap-1 text-sm font-bold text-gray-200">
                     <Group justify="center">
@@ -334,13 +335,15 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
           </div>
         </div>
       </div>
-      <div className="border border-[#323b43] shadow overflow-hidden rounded-lg px-6 py-3">
-        <div className="flex flex-row justify-between py-2">
+      <div className="border border-[#323b43] shadow overflow-hidden rounded-lg px-6 pt-3">
+        <div className="flex flex-row justify-between pt-2">
           <h4 className="text-lg my-auto mb-2">Files</h4>
           <div className="flex">
             <div className="flex flex-row my-auto">
               {viewMode === "grid" && (
                 <Slider
+                color={"#11FA98"}
+              
                   defaultValue={4}
                   max={10}
                   min={3}
@@ -363,6 +366,9 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
             </div>
             <div className="ml-6">
               {isOwner && <Upload selectedAccount={publicKey} />}
+            </div>
+            <div className="ml-6">
+              {isOwner && <Create selectedAccount={publicKey} />}
             </div>
           </div>
         </div>

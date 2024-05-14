@@ -52,9 +52,8 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
         color: '#fff',
       }}
     >
-      <div onClick={() => {router.push(`/`)}} className='flex space-x-1 mb-10'>
-        <Image src={'/scoop-logo.svg'} alt={''} height={50} width={50} ></Image>
-        <h1 className='font-bold text-4xl'>Scoop</h1>
+      <div onClick={() => {router.push(`/`)}} className='mb-10 mx-2'>
+        <Image src={'https://assets-global.website-files.com/653ae95e36bd81f87299010a/653c21a410b274a916b31918_ShdwDrive_WhiteGreen_wGenGo.svg'} alt={''} height={50} width={200} ></Image>
       </div>
       
       <div className='flex items-center justify-between mb-6 px-2'>
@@ -68,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
       <div className="mt-auto">
         <button
           onClick={toggleSwapVisibility}
-          className="w-full  text-white py-2 rounded-md hover:bg-blue-600 transition"
+          className="w-full  text-white py-2 rounded-md hover:border-gray-600 transition"
         >
           {isSwapVisible ? 'Hide' : 'Need $SHDW?'}
         </button>

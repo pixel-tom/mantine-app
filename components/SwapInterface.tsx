@@ -345,7 +345,7 @@ const SwapInterface: React.FC = () => {
             <button
               onClick={handleSwapButtonClick}
               disabled={isLoading}
-              className="font-semibold w-full bg-blue-500 text-gray-50 border border-blue-400 rounded-full px-4 py-3 shadow-inner shadow-bottom hover:bg-[#121212] focus:outline-none"
+              className="font-semibold w-full text-gray-50 border border-[#11FA98] rounded-full px-4 py-3 shadow-inner shadow-bottom hover:bg-[#22272e] focus:outline-none"
             >
               <p className="">{isLoading ? "Loading..." : "Swap"}</p>
             </button>

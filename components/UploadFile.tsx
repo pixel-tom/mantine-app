@@ -11,10 +11,12 @@ import {
   rem,
   useMantineTheme,
   Center,
+  UnstyledButton,
 } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { IconCloudUpload, IconDownload, IconX } from "@tabler/icons-react";
 import classes from "@/styles/Dropzone.module.css";
+import Image from "next/image";
 
 interface UploadProps {
   selectedAccount: string | null;
@@ -115,7 +117,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
     <div className="relative">
       <button
         onClick={() => setShowModal(true)}
-        className="font-bold py-2 px-4 my-auto bg-blue-500 text-blue-50 border border-blue-400 rounded-lg shadow-md hover:bg-blue-600"
+        className="font-medium text-sm  py-2 px-5 my-auto border border-[#11FA98] bg-[#11FA98] text-[#24292d] rounded-lg shadow-md hover:bg-[#5bffbb] hover:border hover:border-[#11FA98]"
       >
         + Upload
       </button>
@@ -146,7 +148,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                       setFileName(selectedFile ? selectedFile.name : null); // Set the file name
                       setFileSize(selectedFile ? selectedFile.size : null);
                     }}
-                    className={`border border-gray-500 border-dashed px-16 py-14 rounded-lg ${classes.dropzone}`}
+                    className={`border border-gray-400 border-dashed bg-gradient-to-br from-[#996bba]/50 to-[#506ac7]/50 px-16 py-14 rounded-lg ${classes.dropzone}`}
                     accept={[
                       MIME_TYPES.png,
                       MIME_TYPES.pdf,
@@ -185,42 +187,37 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                           />
                         </Dropzone.Reject>
                         <Dropzone.Idle>
-                          <IconCloudUpload
-                            style={{ width: rem(50), height: rem(50) }}
-                            stroke={1.5}
-                          />
+                          <Image src={"https://assets-global.website-files.com/653ae95e36bd81f87299010a/653ae95e36bd81f87299020a_11A%20S%20Logomark%20White.svg"} alt={""} height={70} width={70} />
                         </Dropzone.Idle>
                       </Group>
 
-                      <Text ta="center" fw={700} fz="lg" mt="xl">
+                      <Text ta="center" fw={700} fz="lg" mt="xl" className="text-gray-300">
                         <Dropzone.Accept>Drop files here</Dropzone.Accept>
 
-                        <Dropzone.Idle>Upload File</Dropzone.Idle>
+                        <Dropzone.Idle>Upload Files</Dropzone.Idle>
                       </Text>
-                      <Text ta="center" fz="sm" mt="xs" c="dimmed">
+                      <Text ta="center" fz="sm" mt="xs" className="text-gray-500">
                         Drag&apos;n&apos;drop files here to upload.
                       </Text>
                     </div>
                   </Dropzone>
                   <Center>
-                    <Button
-                      className={classes.control}
-                      size="md"
-                      radius="xl"
+                    <button
+                      className={`px-5 py-2 bg-blue-500 font-semibold rounded-lg ${classes.control}`}
                       onClick={() => openRef.current?.()}
                     >
                       Select files
-                    </Button>
+                    </button>
                   </Center>
                 </div>
-                <div className="flex mt-10 ">
+                <div className="flex mt-10 space-x-2 max-h-20 overflow-auto">
                   {fileName && (
                     <p className="text-sm text-gray-300">
                       {fileName} {/* Display the file name */}
                     </p>
                   )}
                   {fileSize && (
-                    <p className="text-xs text-gray-500">
+                    <p className="mt-auto text-xs text-gray-500">
                       {fileSize} b
                     </p>
                   )}
@@ -231,7 +228,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                 <p className="mt-auto text-gray-500 text-xs">There are no fees for uploading files to ShdwDrive.</p>
                 <button
                   type="submit"
-                  className="py-2 px-6 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
+                  className="py-2 px-6 border border-[#11FA98] text-white rounded-lg shadow"
                 >
                   Upload
                 </button>
