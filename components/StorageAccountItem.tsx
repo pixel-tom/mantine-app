@@ -52,7 +52,7 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
             <Menu.Target>
               <UnstyledButton
                 onClick={handleMenuClick}
-                className="hover:bg-[#31383c]  rounded"
+                className="rounded"
               >
                 <div className="flex px-2 flex-col items-center justify-center" >
                   <div className="block h-[3px] w-[3px] bg-gray-400 rounded-full"></div>
