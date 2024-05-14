@@ -4,6 +4,7 @@ import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import Image from "next/image";
 import { MdInfo } from "react-icons/md";
 import Toast from "./Toast";
+import { useRouter } from "next/router";
 
 interface ToastState {
   show: boolean;
@@ -23,6 +24,7 @@ const CreateStorageAccount: React.FC = () => {
     details: "",
     type: "info",
   });
+  const router = useRouter();
 
   const wallet = useWallet();
   const { connection } = useConnection();
@@ -95,6 +97,7 @@ const CreateStorageAccount: React.FC = () => {
       type: "error",
     });
     setShowModal(false);
+    router.push(`/account/${newAccount.shdw_bucket}`);
   };
 
   const closeToast = () => {

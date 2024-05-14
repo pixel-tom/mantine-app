@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { PublicKey } from "@solana/web3.js";
-import { ShdwDrive } from "@shadow-drive/sdk";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import {
   BiSolidFileDoc,
   BiSolidFileJson,
@@ -19,6 +18,7 @@ import {
 import { PiFileCodeFill } from "react-icons/pi";
 import { BsFileEarmarkZipFill } from "react-icons/bs";
 import { Menu, rem, UnstyledButton } from "@mantine/core";
+import { useSHDWDrive } from "@/contexts/ShadowDriveProvider"; // Ensure this import points to the correct path
 
 interface FileCardProps {
   fileName: string;
@@ -35,7 +35,7 @@ const FileCard: React.FC<FileCardProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   const isImage = /\.(jpg|jpeg|png|gif)$/.test(fileName);
-  const { connection } = useConnection();
+  const { drive, connection } = useSHDWDrive();
   const wallet = useWallet();
 
   const fileIcon = (fileName: string) => {
@@ -79,10 +79,12 @@ const FileCard: React.FC<FileCardProps> = ({
   };
 
   const deleteFile = async (publicKey: string, fileUrl: string) => {
-    const drive = await new ShdwDrive(connection, wallet).init();
-    const pubKey = new PublicKey(publicKey);
-    const sig = await drive.deleteFile(pubKey, fileUrl);
-    console.log(sig);
+    if (!drive || !wallet) return;
+    try {
+      await drive.deleteFile(new PublicKey(publicKey), fileUrl);
+    } catch (error) {
+      console.error("Error deleting file:", error);
+    }
   };
 
   return (

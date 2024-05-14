@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Connection, GetProgramAccountsFilter, ParsedAccountData, PublicKey } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import useEndpoint from '@/hooks/useEndpoint';
 
-const rpcEndpoint = 'https://mainnet.helius-rpc.com/?api-key=d31340bd-19ab-4fd6-9d30-f6b8360f7f29';
-const solanaConnection = new Connection(rpcEndpoint);
+
+
 
 const SOL_MINT_ADDRESS = 'So11111111111111111111111111111111111111112';
 
@@ -15,12 +16,13 @@ type MyComponentProps = {
 const MyComponent: React.FC<MyComponentProps> = ({ searchMintAddress }) => {
     const walletAddress = useWallet().publicKey?.toString();
     const [tokenBalance, setTokenBalance] = useState<number | null>(null);
+    const { connection } = useConnection();
 
     useEffect(() => {
         if (walletAddress) {
-            getTokenAccounts(walletAddress, searchMintAddress, solanaConnection);
+            getTokenAccounts(walletAddress, searchMintAddress, connection);
         }
-    }, [walletAddress, searchMintAddress]);
+    }, [walletAddress, searchMintAddress, connection]);
 
     async function getTokenAccounts(walletAddress: string, mintAddress: string, solanaConnection: Connection) {
         if (mintAddress === SOL_MINT_ADDRESS) {

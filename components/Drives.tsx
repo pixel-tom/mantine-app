@@ -1,14 +1,12 @@
-import React, { useState, Suspense } from "react";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import React, { useState, useCallback, Suspense } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import Toast from "@/components/Toast";
 import StorageAccountItem from "./StorageAccountItem";
 import useStorageAccounts from "@/hooks/useStorageAccounts";
 import { formatBytes } from "@/utils/formatBytes";
-import {
-  deleteStorageAccount,
-  makeStorageImmutable,
-} from "@/services/shdwDriveService";
+import { useSHDWDrive } from "@/contexts/ShadowDriveProvider";
 import { useRouter } from "next/router";
+import { PublicKey } from "@solana/web3.js";
 
 interface ToastState {
   show: boolean;
@@ -25,7 +23,7 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
   onAccountSelect,
 }) => {
   const { accounts, setAccounts, isLoading } = useStorageAccounts();
-  const { connection } = useConnection();
+  const { drive, connection } = useSHDWDrive();
   const wallet = useWallet();
   const [toast, setToast] = useState<ToastState>({
     show: false,
@@ -43,14 +41,15 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
     setToast({ show: true, message, type, details });
   };
 
-  const handleClick = (publicKey: string) => {
+  const handleClick = useCallback((publicKey: string) => {
     router.push(`/account/${publicKey}`);
-  };
+  }, [router]);
 
-  const handleDeleteStorageAccount = async (publicKey: string) => {
+  const handleDeleteStorageAccount = useCallback(async (publicKey: string) => {
+    if (!drive || !wallet) return;
     showToast("Deleting storage account...", "loading");
     try {
-      const sig = await deleteStorageAccount(connection, wallet, publicKey);
+      const sig = await drive.deleteStorageAccount(new PublicKey(publicKey));
       const updatedAccounts = accounts.filter(
         (account) => account.publicKey.toBase58() !== publicKey
       );
@@ -63,12 +62,13 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
     } catch (error) {
       showToast(`Failed to delete storage account: ${error}`, "error");
     }
-  };
+  }, [drive, wallet, accounts, setAccounts]);
 
-  const handleMakeStorageImmutable = async (publicKey: string) => {
+  const handleMakeStorageImmutable = useCallback(async (publicKey: string) => {
+    if (!drive || !wallet) return;
     showToast("Making storage account immutable...", "loading");
     try {
-      const sig = await makeStorageImmutable(connection, wallet, publicKey);
+      const sig = await drive.makeStorageImmutable(new PublicKey(publicKey));
       showToast(
         "Storage account made immutable successfully!",
         "success",
@@ -77,40 +77,28 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
     } catch (error) {
       showToast(`Error making storage immutable: ${error}`, "error");
     }
-  };
+  }, [drive, wallet]);
 
   const SkeletonLoader = () => {
     return (
       <div className="animate-pulse space-y-4">
-        <div className="h-14 bg-[#24292d] rounded w-full"></div>
-        <div className="h-14 bg-[#24292d] rounded w-full"></div>
-        <div className="h-14 bg-[#24292d] rounded w-full"></div>
-        <div className="h-14 bg-[#24292d] rounded w-full"></div>
+        <div className="h-16 bg-[#24292d] rounded w-full"></div>
+        <div className="h-16 bg-[#24292d] rounded w-full"></div>
+        <div className="h-16 bg-[#24292d] rounded w-full"></div>
+        <div className="h-16 bg-[#24292d] rounded w-full"></div>
       </div>
     );
   };
-
-  if (isLoading) {
-    return <div><SkeletonLoader /></div>;
-  }
-
-  if (!wallet.connected) {
-    return (
-      <div className="flex flex-col items-center text-center h-full">
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-8">
-          Connect your wallet to view your accounts
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className={`fade-in flex flex-col`}>
       <div className="flex-1 rounded-lg dark:text-gray-300">
         <div>
-          {accounts.length > 0 ? (
+          {isLoading ? (
+            <SkeletonLoader />
+          ) : accounts.length > 0 ? (
             <ul>
-              {accounts.map((account, index) => (
+              {accounts.map((account) => (
                 <Suspense
                   key={account.publicKey.toBase58()}
                   fallback={<SkeletonLoader />}

@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { ShdwDrive } from "@shadow-drive/sdk";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import React, { useEffect, useState, useRef } from "react";
 import { PublicKey } from "@solana/web3.js";
-import Toast from "./Toast";
-import { useRef } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import {
   Text,
   Group,
-  Button,
   rem,
   useMantineTheme,
   Center,
   UnstyledButton,
 } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
-import { IconCloudUpload, IconDownload, IconX } from "@tabler/icons-react";
-import classes from "@/styles/Dropzone.module.css";
+import { IconDownload, IconX } from "@tabler/icons-react";
 import Image from "next/image";
+import Toast from "./Toast";
+import { useSHDWDrive } from "@/contexts/ShadowDriveProvider"; // Correct import path
+import classes from "@/styles/Dropzone.module.css";
 
 interface UploadProps {
   selectedAccount: string | null;
@@ -32,14 +30,14 @@ interface ToastState {
 const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
   const [file, setFile] = useState<File | null>(null);
   const [fileSize, setFileSize] = useState<number | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null); // Added to store the file name
+  const [fileName, setFileName] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>({
     show: false,
     message: "",
     details: "",
     type: "info",
   });
-  const { connection } = useConnection();
+  const { drive, connection } = useSHDWDrive();
   const wallet = useWallet();
   const theme = useMantineTheme();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -48,10 +46,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         setShowModal(false);
       }
     };
@@ -81,7 +76,8 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
       return;
     }
 
-    const drive = await new ShdwDrive(connection, wallet).init();
+    if (!drive || !wallet) return;
+
     const publicKey = new PublicKey(selectedAccount);
 
     try {
@@ -117,14 +113,14 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
     <div className="relative">
       <button
         onClick={() => setShowModal(true)}
-        className="font-medium text-sm  py-2 px-5 my-auto border border-[#11FA98] bg-[#11FA98] text-[#24292d] rounded-lg shadow-md hover:bg-[#5bffbb] hover:border hover:border-[#11FA98]"
+        className="font-medium text-sm py-2 px-5 my-auto border border-[#11FA98] bg-[#11FA98] text-[#24292d] rounded-lg shadow-md hover:bg-[#5bffbb] hover:border hover:border-[#11FA98]"
       >
         + Upload
       </button>
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
-          <div className="bg-[#292e31] max-w-[800px] w-full rounded-lg shadow-lg p-10 relative">
+          <div ref={modalRef} className="bg-[#292e31] max-w-[800px] w-full rounded-lg shadow-lg p-10 relative">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -145,7 +141,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                     onDrop={(files) => {
                       const selectedFile = files.length > 0 ? files[0] : null;
                       setFile(selectedFile);
-                      setFileName(selectedFile ? selectedFile.name : null); // Set the file name
+                      setFileName(selectedFile ? selectedFile.name : null);
                       setFileSize(selectedFile ? selectedFile.size : null);
                     }}
                     className={`border border-gray-400 border-dashed bg-gradient-to-br from-[#5D616D]/50 to-[#222935]/50 px-16 py-14 rounded-lg ${classes.dropzone}`}
@@ -187,7 +183,12 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                           />
                         </Dropzone.Reject>
                         <Dropzone.Idle>
-                          <Image src={"https://assets-global.website-files.com/653ae95e36bd81f87299010a/653ae95e36bd81f87299020e_10A%20S%20Logomark.svg"} alt={""} height={70} width={70} />
+                          <Image
+                            src={"https://assets-global.website-files.com/653ae95e36bd81f87299010a/653ae95e36bd81f87299020e_10A%20S%20Logomark.svg"}
+                            alt={""}
+                            height={70}
+                            width={70}
+                          />
                         </Dropzone.Idle>
                       </Group>
 
@@ -213,7 +214,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                 <div className="flex mt-10 space-x-2 max-h-20 overflow-auto">
                   {fileName && (
                     <p className="text-sm text-gray-300">
-                      {fileName} {/* Display the file name */}
+                      {fileName}
                     </p>
                   )}
                   {fileSize && (
