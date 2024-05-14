@@ -15,7 +15,7 @@ const useStorageAccounts = () => {
       try {
         await drive.init();
         // Simulate a delay
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        
         const fetchedAccounts = await drive.getStorageAccounts();
         if (fetchedAccounts.length === 0) {
           throw new Error("You have not created a storage account on Shadow Drive yet.");
@@ -46,14 +46,6 @@ const useStorageAccounts = () => {
       loadStorageAccounts();
     }
   }, [drive, hasFetched, loadStorageAccounts]); // Include hasFetched to prevent re-fetching
-
-  const throttledLog = useMemo(() => debounce((accounts: any) => {
-    console.log(accounts);
-  }, 100), []);
-
-  useEffect(() => {
-    throttledLog(accounts);
-  }, [accounts, throttledLog]);
 
   return { accounts, setAccounts, isLoading };
 };
