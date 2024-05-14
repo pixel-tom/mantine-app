@@ -82,10 +82,10 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
   const SkeletonLoader = () => {
     return (
       <div className="animate-pulse space-y-4">
-        <div className="h-14 bg-gray-800 rounded w-full"></div>
-        <div className="h-14 bg-gray-800 rounded w-full"></div>
-        <div className="h-14 bg-gray-800 rounded w-full"></div>
-        <div className="h-14 bg-gray-800 rounded w-full"></div>
+        <div className="h-14 bg-[#24292d] rounded w-full"></div>
+        <div className="h-14 bg-[#24292d] rounded w-full"></div>
+        <div className="h-14 bg-[#24292d] rounded w-full"></div>
+        <div className="h-14 bg-[#24292d] rounded w-full"></div>
       </div>
     );
   };
