@@ -277,7 +277,7 @@ const SwapInterface: React.FC = () => {
             </div>
             <div className="flex justify-between w-full mb-2 mt-2 ">
               <hr className="w-2/5 my-auto border-[#323b43]  mx-auto" />
-              <TbArrowsTransferDown className="w-5 h-5  rounded-full  text-gray-600 " />
+              <TbArrowsTransferDown className="w-5 h-5  rounded-full  text-gray-500 " />
               <hr className="w-2/5 my-auto border-[#323b43] mx-auto" />
             </div>
 

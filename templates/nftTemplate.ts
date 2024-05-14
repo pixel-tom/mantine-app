@@ -10,14 +10,6 @@ export const nftTemplate = `{
       {
         "trait_type": "",
         "value": ""
-      },
-      {
-        "trait_type": "",
-        "value": ""
-     },
-     {
-        "trait_type": "",
-        "value": ""
       }
     ],
     "collection": {
@@ -29,8 +21,7 @@ export const nftTemplate = `{
         {
           "uri": "",
           "type": ""
-        },
-        
+        }
       ],
       "creators": [
         {

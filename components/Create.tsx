@@ -9,6 +9,20 @@ import {
   usefulFile1,
   usefulFile2,
 } from "@/templates";
+import { Menu, rem } from "@mantine/core";
+import {
+  IconArrowsLeftRight,
+  IconMessageCircle,
+  IconPhoto,
+  IconSettings,
+} from "@tabler/icons-react";
+import Editor from "@monaco-editor/react";
+import CodeMirror from "@uiw/react-codemirror";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+import { atomone } from "@uiw/codemirror-theme-atomone"
+import { tokyoNight} from "@uiw/codemirror-theme-tokyo-night"
+import { json } from '@codemirror/lang-json'
+
 
 interface CreateProps {
   selectedAccount: string | null;
@@ -38,7 +52,7 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
   });
   const { connection } = useConnection();
   const wallet = useWallet();
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showTemplateModal, setShowTemplateModal] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   const templates: Record<TemplateKeys, string> = {
@@ -54,7 +68,7 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
       ) {
-        setShowModal(false);
+        setShowTemplateModal(false);
       }
     };
 
@@ -121,14 +135,53 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
 
   return (
     <div className="relative">
-      <button
-        onClick={() => setShowModal(true)}
-        className="font-semibold text-sm py-2 px-5 my-auto border border-[#11FA98]  text-gray-200 rounded-lg shadow-md hover:bg-[#181c20] hover:text-gray-200 hover:border hover:border-[#11FA98]"
-      >
-        + Create
-      </button>
+      <Menu position="bottom-end" offset={11} withArrow shadow="lg" width={200}>
+        <Menu.Target>
+          <button className="font-semibold text-sm py-2 px-5 my-auto border border-[#11FA98]  text-gray-200 rounded-lg shadow-md hover:bg-[#181c20] hover:text-gray-200 hover:border hover:border-[#11FA98]">
+            + Create
+          </button>
+        </Menu.Target>
 
-      {showModal && (
+        <Menu.Dropdown bg="#181c20">
+          <Menu.Label>Create</Menu.Label>
+          <Menu.Item
+            onClick={() => setShowTemplateModal(true)}
+            leftSection={
+              <IconSettings style={{ width: rem(14), height: rem(14) }} />
+            }
+          >
+            Template File
+          </Menu.Item>
+          <Menu.Item
+            leftSection={
+              <IconMessageCircle style={{ width: rem(14), height: rem(14) }} />
+            }
+          >
+            Copy Link
+          </Menu.Item>
+          <Menu.Item
+            leftSection={
+              <IconPhoto style={{ width: rem(14), height: rem(14) }} />
+            }
+          >
+            Gallery
+          </Menu.Item>
+
+          <Menu.Divider />
+
+          <Menu.Item
+            leftSection={
+              <IconArrowsLeftRight
+                style={{ width: rem(14), height: rem(14) }}
+              />
+            }
+          >
+            Transfer my data
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+
+      {showTemplateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
           <div
             ref={modalRef}
@@ -142,37 +195,46 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
               className="flex flex-col"
             >
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => setShowTemplateModal(false)}
                 className="absolute top-0 right-2 m-2 text-lg font-bold text-gray-900"
               >
                 <p className="text-gray-300 text-2xl">&times;</p>
               </button>
-              <div className="mb-4">
-                <select
-                  onChange={(e) =>
-                    setContent(
-                      templates[e.currentTarget.value as TemplateKeys] || ""
-                    )
-                  }
-                  className="w-full p-2 bg-[#3a3f42] text-gray-300 border border-gray-600 rounded-lg"
-                >
-                  <option value="" disabled>
-                    Select a template
-                  </option>
-                  {Object.keys(templates).map((template) => (
-                    <option key={template} value={template}>
-                      {template}
+              <div className="flex justify-start mb-4">
+                <div className="flex gap-3 ">
+                  <p className="my-auto text-sm text-gray-400">
+                    Select a Template:
+                  </p>
+                  <select
+                    onChange={(e) =>
+                      setContent(
+                        templates[e.currentTarget.value as TemplateKeys] || ""
+                      )
+                    }
+                    className="py-3 px-3 bg-[#3a3f42] text-gray-300 text-sm border border-gray-600 rounded-lg"
+                  >
+                    <option value="" disabled>
+                      Select a template
                     </option>
-                  ))}
-                </select>
+                    {Object.keys(templates).map((template) => (
+                      <option key={template} value={template}>
+                        {template}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <textarea
-                placeholder="Enter your content here..."
+              <div className="mb-4">
+                <CodeMirror
                 value={content}
-                onChange={(e) => setContent(e.currentTarget.value)}
-                className="mb-4 p-2 bg-[#181c20] text-gray-300 text-sm border border-gray-600 rounded-lg"
-                rows={10}
+                height="400px"
+                theme={vscodeDark}
+                extensions={[json()]}
+                onChange={(value) => setContent(value || "")}
+                className="text-sm"
               />
+              </div>
+              
               <div className="ml-auto mb-4 w-1/3">
                 <select
                   value={fileType || ""}

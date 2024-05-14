@@ -148,7 +148,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                       setFileName(selectedFile ? selectedFile.name : null); // Set the file name
                       setFileSize(selectedFile ? selectedFile.size : null);
                     }}
-                    className={`border border-gray-400 border-dashed bg-gradient-to-br from-[#996bba]/50 to-[#506ac7]/50 px-16 py-14 rounded-lg ${classes.dropzone}`}
+                    className={`border border-gray-400 border-dashed bg-gradient-to-br from-[#5D616D]/50 to-[#222935]/50 px-16 py-14 rounded-lg ${classes.dropzone}`}
                     accept={[
                       MIME_TYPES.png,
                       MIME_TYPES.pdf,
@@ -187,7 +187,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                           />
                         </Dropzone.Reject>
                         <Dropzone.Idle>
-                          <Image src={"https://assets-global.website-files.com/653ae95e36bd81f87299010a/653ae95e36bd81f87299020a_11A%20S%20Logomark%20White.svg"} alt={""} height={70} width={70} />
+                          <Image src={"https://assets-global.website-files.com/653ae95e36bd81f87299010a/653ae95e36bd81f87299020e_10A%20S%20Logomark.svg"} alt={""} height={70} width={70} />
                         </Dropzone.Idle>
                       </Group>
 
@@ -203,7 +203,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                   </Dropzone>
                   <Center>
                     <button
-                      className={`px-5 py-2 bg-blue-500 font-semibold rounded-lg ${classes.control}`}
+                      className={`px-5 py-2 bg-[#11FA98] text-gray-800 text-sm font-semibold rounded-lg ${classes.control}`}
                       onClick={() => openRef.current?.()}
                     >
                       Select files
@@ -228,7 +228,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                 <p className="mt-auto text-gray-500 text-xs">There are no fees for uploading files to ShdwDrive.</p>
                 <button
                   type="submit"
-                  className="py-2 px-6 border border-[#11FA98] text-white rounded-lg shadow"
+                  className="py-2 px-6 border border-[#11FA98] font-semibold text-sm text-white rounded-lg shadow"
                 >
                   Upload
                 </button>

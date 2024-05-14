@@ -122,10 +122,10 @@ const CreateStorageAccount: React.FC = () => {
             >
               <p className="text-white text-2xl">&times;</p>
             </button>
-            <div className="w-full bg-gradient-to-br from-[#996bba]/50 to-[#506ac7]/50 py-10 rounded-t-lg">
+            <div className="w-full bg-gradient-to-br from-[#5D616D]/50 to-[#A5ACBC]/50 py-10 rounded-t-lg">
               <Image
                 src={
-                  "https://assets-global.website-files.com/653ae95e36bd81f87299010a/653bfac986a961f71aecfa95_ShdwDrive_Stacked_AllWhite.svg"
+                  "https://assets-global.website-files.com/653ae95e36bd81f87299010a/653bfaddaa8ce3747b4adab9_ShdwDrive_Stacked_Black_Green.svg"
                 }
                 alt={""}
                 width={100}
@@ -190,12 +190,15 @@ const CreateStorageAccount: React.FC = () => {
                   <MdInfo className="text-gray-300 h-6 w-6 ml-2 my-auto" />
                 </div>
               </div>
-              <div className="mt-6">
+              <div className=" flex justify-end mt-6 gap-4">
+                <p className="mt-auto text-gray-500 text-xs">
+                  You will be charged SOL and $SHDW
+                </p>
                 <button
                   onClick={handleCreateAccount}
-                  className="w-full py-2 bg-[#272727] text-white border border-[#506ac7] rounded-md hover:bg-[#506ac7]"
+                  className="flex-end py-2 px-5 bg-[#272727] text-white border border-[#11FA98] rounded-md"
                 >
-                  Create Account
+                  Create
                 </button>
               </div>
             </div>

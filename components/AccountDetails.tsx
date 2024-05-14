@@ -391,7 +391,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
         </div>
         {files.length === 0 ? (
           <div className="flex items-center justify-center h-32 text-gray-500">
-            Storage Account is empty. Upload files to get started.
+            Storage Account is empty
           </div>
         ) : viewMode === "grid" ? (
           <div style={gridStyle} className="grid gap-4 mt-4 fade-in overflow-auto">
