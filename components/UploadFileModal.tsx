@@ -83,7 +83,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount, onUploadSuccess }) => 
       </button>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black blur bg-opacity-50 flex justify-center items-center z-[1000]">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
           <div
             ref={modalRef}
             className="bg-[#292e31] max-w-[800px] w-full rounded-lg shadow-lg p-10 relative"
