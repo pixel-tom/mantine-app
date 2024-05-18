@@ -358,13 +358,6 @@ const SwapInterface: React.FC = () => {
           
         </div>
       </div>
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        details={toast.details}
-        type={toast.type}
-        onClose={closeToast}
-      />
     </div>
   );
 };

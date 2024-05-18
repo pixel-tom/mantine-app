@@ -23,7 +23,7 @@ export const SHDWDriveProvider: React.FC<SHDWDriveProviderProps> = ({ children }
     const conn = new Connection(SOLANA_API, 'processed');
     const initializeDrive = async () => {
       if (wallet.connected) {
-        const driveInstance = new ShdwDrive(conn, wallet); // Initialize the ShdwDrive instance
+        const driveInstance = new ShdwDrive(conn, wallet);
         setDrive(driveInstance);
       }
     };

@@ -3,7 +3,7 @@ import { PublicKey } from "@solana/web3.js";
 import { useSHDWDrive } from "@/contexts/ShadowDriveProvider";
 
 const useStorageAccounts = () => {
-  const { drive, connection } = useSHDWDrive();
+  const { drive } = useSHDWDrive();
   const [accounts, setAccounts] = useState<
     { publicKey: PublicKey; details?: any }[]
   >([]);

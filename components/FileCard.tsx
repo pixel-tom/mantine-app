@@ -35,7 +35,7 @@ const FileCard: React.FC<FileCardProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   const isImage = /\.(jpg|jpeg|png|gif)$/.test(fileName);
-  const { drive, connection } = useSHDWDrive();
+  const { drive } = useSHDWDrive();
   const wallet = useWallet();
 
   const fileIcon = (fileName: string) => {

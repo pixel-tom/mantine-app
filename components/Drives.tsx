@@ -23,7 +23,7 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
   onAccountSelect,
 }) => {
   const { accounts, setAccounts, isLoading } = useStorageAccounts();
-  const { drive, connection } = useSHDWDrive();
+  const { drive } = useSHDWDrive();
   const wallet = useWallet();
   const [toast, setToast] = useState<ToastState>({
     show: false,
@@ -131,13 +131,6 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
           )}
         </div>
       </div>
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        type={toast.type}
-        onClose={() => setToast({ ...toast, show: false })}
-        details={toast.details}
-      />
     </div>
   );
 };

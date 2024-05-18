@@ -37,7 +37,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
     details: "",
     type: "info",
   });
-  const { drive, connection } = useSHDWDrive();
+  const { drive } = useSHDWDrive();
   const wallet = useWallet();
   const theme = useMantineTheme();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -238,14 +238,6 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
           </div>
         </div>
       )}
-
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        type={toast.type}
-        onClose={closeToast}
-        details={toast.details}
-      />
     </div>
   );
 };
