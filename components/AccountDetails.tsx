@@ -43,7 +43,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
         if (!wallet || !wallet.connected) {
           throw new Error("Wallet is not connected");
         }
-        const sig = await drive.makeStorageImmutable(new PublicKey(publicKey));
+        await drive.makeStorageImmutable(new PublicKey(publicKey));
         showToast(`Drive is now Immutable!`, "success");
       } catch (error: any) {
         showToast(`${error.message}`, "error");

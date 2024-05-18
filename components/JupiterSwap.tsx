@@ -40,12 +40,7 @@ const JupiterSwap: React.FC = () => {
       const slippagePercentage = parseFloat(slippage) / 100;
 
       const axiosResponse = await axios.get(
-        `https://quote-api.jup.ag/v6/quote?
-        inputMint=${inputTokenData.mint}&
-        outputMint=${outputTokenData.mint}&
-        amount=${inputTokenAmountLamports}&
-        slippage=${slippagePercentage}&
-        onlyDirectRoutes=true`,
+        `https://quote-api.jup.ag/v6/quote?inputMint=${inputTokenData.mint}&outputMint=${outputTokenData.mint}&amount=${inputTokenAmountLamports}&slippage=${slippagePercentage}&onlyDirectRoutes=true`,
         {
           headers: {
             Accept: "application/json",
@@ -78,12 +73,7 @@ const JupiterSwap: React.FC = () => {
       }
 
       const axiosResponse = await axios.get(
-        `https://quote-api.jup.ag/v6/quote?
-        inputMint=${inputTokenData.mint}&
-        outputMint=${outputTokenData.mint}&
-        amount=${inputTokenAmountLamports}&
-        slippage=${slippagePercentage}&
-        onlyDirectRoutes=true`,
+        `https://quote-api.jup.ag/v6/quote?inputMint=${inputTokenData.mint}&outputMint=${outputTokenData.mint}&amount=${inputTokenAmountLamports}&slippage=${slippagePercentage}&onlyDirectRoutes=true`,
         {
           headers: {
             Accept: "application/json",
