@@ -2,10 +2,11 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { Connection } from '@solana/web3.js';
 import { ShdwDrive } from "@shadow-drive/sdk"; // Replace with the actual SDK import if it's different
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { SOLANA_API } from '@/constants/constants';
 
 interface SHDWDriveContextType {
   drive: ShdwDrive | null;
-  connection: Connection;
+  
 }
 
 interface SHDWDriveProviderProps {
@@ -17,21 +18,21 @@ const SHDWDriveContext = createContext<SHDWDriveContextType | null>(null);
 export const SHDWDriveProvider: React.FC<SHDWDriveProviderProps> = ({ children }) => {
   const wallet = useWallet();
   const [drive, setDrive] = useState<ShdwDrive | null>(null);
-  const { connection } = useConnection(); // Replace with your network endpoint
 
   useEffect(() => {
+    const conn = new Connection(SOLANA_API, 'processed');
     const initializeDrive = async () => {
       if (wallet.connected) {
-        const driveInstance = new ShdwDrive(connection, wallet); // Initialize the ShdwDrive instance
+        const driveInstance = new ShdwDrive(conn, wallet); // Initialize the ShdwDrive instance
         setDrive(driveInstance);
       }
     };
 
     initializeDrive();
-  }, [wallet, connection]);
+  }, [wallet]);
 
   return (
-    <SHDWDriveContext.Provider value={{ drive, connection }}>
+    <SHDWDriveContext.Provider value={{ drive }}>
       {children}
     </SHDWDriveContext.Provider>
   );

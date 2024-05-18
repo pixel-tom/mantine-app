@@ -208,13 +208,6 @@ const CreateStorageAccount: React.FC = () => {
           </div>
         </div>
       )}
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        type={toast.type}
-        onClose={closeToast}
-        details={toast.details}
-      />
     </div>
   );
 };

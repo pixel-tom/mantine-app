@@ -18,3 +18,5 @@ export const SOLANA_RPC_ENDPOINT =
   ENV === "devnet"
     ? "https://devnet.helius-rpc.com/?api-key=d31340bd-19ab-4fd6-9d30-f6b8360f7f29"
     : "https://mainnet.helius-rpc.com/?api-key=d31340bd-19ab-4fd6-9d30-f6b8360f7f29";
+
+    export const SOLANA_API = "https://mainnet.helius-rpc.com/?api-key=d31340bd-19ab-4fd6-9d30-f6b8360f7f29"

@@ -1,7 +1,7 @@
-import React from 'react';
-import { PublicKey } from '@solana/web3.js';
-import { Menu, rem, UnstyledButton } from '@mantine/core';
-import { IconSettings, IconTrash } from '@tabler/icons-react';
+import React from "react";
+import { PublicKey } from "@solana/web3.js";
+import { Menu, rem, UnstyledButton } from "@mantine/core";
+import { IconSettings, IconTrash } from "@tabler/icons-react";
 
 interface StorageAccountItemProps {
   account: {
@@ -21,19 +21,18 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
   deleteStorageAccount,
   formatBytes,
 }) => {
-
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
 
   return (
-    <li
-      className="py-5 relative hover:bg-[#24292d]  focus:border focus:border-black focus-visible:border focus-visible:border-black rounded-md"
-      
-    >
+    <li className="py-5 relative hover:bg-[#24292d]  focus:border focus:border-black focus-visible:border focus-visible:border-black rounded-md">
       <div className="flex items-center justify-between px-3">
         <div className="flex space-x-3">
-          <div onClick={() => onClick(account.publicKey.toString())} className="text-sm p-1 font-semibold text-gray-100 hover:cursor-pointer">
+          <div
+            onClick={() => onClick(account.publicKey.toString())}
+            className="text-sm p-1 font-semibold text-gray-100 hover:cursor-pointer"
+          >
             {account.details.identifier}
           </div>
         </div>
@@ -50,11 +49,8 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
             floatingStrategy="absolute"
           >
             <Menu.Target>
-              <UnstyledButton
-                onClick={handleMenuClick}
-                className="rounded"
-              >
-                <div className="flex px-2 flex-col items-center justify-center" >
+              <UnstyledButton onClick={handleMenuClick} className="rounded">
+                <div className="flex px-2 flex-col items-center justify-center">
                   <div className="block h-[3px] w-[3px] bg-gray-400 rounded-full"></div>
                   <div className="block h-[3px] w-[3px] bg-gray-400 rounded-full mt-1"></div>
                   <div className="block h-[3px] w-[3px] bg-gray-400 rounded-full mt-1"></div>
@@ -65,16 +61,24 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
             <Menu.Dropdown bg="#232a2d">
               <Menu.Label>{account.details.identifier}</Menu.Label>
               <Menu.Item
-                onClick={() => makeStorageImmutable(account.publicKey.toString())}
-                leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />}
+                onClick={() =>
+                  makeStorageImmutable(account.publicKey.toString())
+                }
+                leftSection={
+                  <IconSettings style={{ width: rem(14), height: rem(14) }} />
+                }
               >
                 Make Immutable
               </Menu.Item>
               <Menu.Divider />
               <Menu.Item
                 color="red"
-                onClick={() => deleteStorageAccount(account.publicKey.toString())}
-                leftSection={<IconTrash style={{ width: rem(14), height: rem(14) }} />}
+                onClick={() =>
+                  deleteStorageAccount(account.publicKey.toString())
+                }
+                leftSection={
+                  <IconTrash style={{ width: rem(14), height: rem(14) }} />
+                }
               >
                 Delete Account
               </Menu.Item>
@@ -86,7 +90,6 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
   );
 };
 
-// Add display name to the memoized component
 const MemoizedStorageAccountItem = React.memo(StorageAccountItem);
 MemoizedStorageAccountItem.displayName = "StorageAccountItem";
 

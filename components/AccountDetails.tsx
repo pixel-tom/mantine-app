@@ -3,194 +3,23 @@ import { ShdwDrive } from "@shadow-drive/sdk";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import Upload from "@/components/UploadFile";
+import Create from "@/components/Create";
+import Toast from "@/components/Toast";
 import FileCard from "@/components/FileCard";
+import ListView from "@/components/ListView";
 import { LuLayoutGrid } from "react-icons/lu";
 import { IoIosList } from "react-icons/io";
 import {
-  Menu,
-  Button,
   Slider,
   Text,
   rem,
+  Button,
   UnstyledButton,
   HoverCard,
   Group,
 } from "@mantine/core";
-import {
-  IconMessageCircle,
-  IconTrash,
-  IconArrowsLeftRight,
-} from "@tabler/icons-react";
-import Image from "next/image";
-import { MdLockOpen, MdLockOutline } from "react-icons/md";
 import { FaHardDrive } from "react-icons/fa6";
-import Create from "./Create";
-
-type FileDetail = {
-  name: string;
-  size?: string;
-};
-
-type ListViewProps = {
-  files: string[];
-  publicKey: string;
-};
-
-const ListView: FC<ListViewProps> = ({ files, publicKey }) => {
-  const [fileDetails, setFileDetails] = useState<FileDetail[]>(
-    files.map((file) => ({ name: file }))
-  );
-
-  useEffect(() => {
-    const fetchFileSizes = async () => {
-      const promises = files.map(async (file) => {
-        const fileUrl = `https://shdw-drive.genesysgo.net/${publicKey}/${file}`;
-        try {
-          const response = await fetch(fileUrl, { method: "HEAD" });
-          const sizeBytes = response.headers.get("content-length");
-          const size = sizeBytes
-            ? `${(parseInt(sizeBytes) / 1024).toFixed(2)} KB`
-            : "Unknown";
-          return { name: file, size };
-        } catch (error) {
-          console.error("Error fetching file size for:", file, error);
-          return { name: file, size: "Error" };
-        }
-      });
-      const results = await Promise.all(promises);
-      setFileDetails(results);
-    };
-
-    fetchFileSizes();
-  }, [files, publicKey]);
-
-  return (
-    <div className="w-full mt-4 fade-in">
-      <div className="w-full grid grid-cols-12 gap-4 text-left text-sm text-gray-500 font-semibold py-2">
-        <div className="col-span-1"></div>
-        <div className="col-span-6 px-5">Name</div>
-        <div className="col-span-2 px-3">File Type</div>
-        <div className="col-span-2 px-3">File Size</div>
-        <div className="col-span-1"></div>
-      </div>
-      {fileDetails.map((file, index) => (
-        <FileRow key={index} file={file} publicKey={publicKey} index={index} />
-      ))}
-    </div>
-  );
-};
-
-type FileRowProps = {
-  file: FileDetail;
-  publicKey: string;
-  index: number;
-};
-
-const FileRow: FC<FileRowProps> = ({ file, publicKey, index }) => {
-  const [animate, setAnimate] = useState(false);
-  const fileUrl = `https://shdw-drive.genesysgo.net/${publicKey}/${file.name}`;
-  const fileType = file.name.includes(".") ? file.name.split(".").pop() : "Unknown";
-
-  useEffect(() => {
-    setTimeout(() => {
-      setAnimate(true);
-    }, 0); // You can adjust the delay if needed
-  }, []);
-
-  return (
-    <div
-      className={`grid grid-cols-12 gap-4 h-14 items-center p-2 rounded-md mb-2 hover:border hover:border-[#586166] ${
-        index % 2 === 0 ? "bg-[#363b3e]" : "bg-[#2f3437]"
-      } ${animate ? 'fade-in' : 'hidden'}`}
-    >
-      <div className="col-span-2 sm:col-span-1 px-4">
-        <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-          <Image
-            src={fileUrl}
-            alt=""
-            width={40}
-            height={40}
-            layout="intrinsic"
-            objectFit="contain"
-            className="rounded-md bg-gray-400"
-          />
-        </a>
-      </div>
-      <div className="col-span-6 px-4">
-        <a
-          href={fileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold text-sm text-blue-50 hover:text-blue-200"
-        >
-          {file.name}
-        </a>
-      </div>
-      <div className="text-sm col-span-2 px-4">{fileType}</div>
-      <div className="text-sm col-span-2 px-4 text-gray-400">{file.size}</div>
-      <FileMenu file={file} publicKey={publicKey} />
-    </div>
-  );
-};
-
-type FileMenuProps = {
-  file: FileDetail;
-  publicKey: string;
-};
-
-const FileMenu: FC<FileMenuProps> = ({ file, publicKey }) => {
-  const { connection } = useConnection();
-  const wallet = useWallet();
-  const deleteFile = async (fileUrl: string) => {
-    const drive = await new ShdwDrive(connection, wallet).init();
-    const pubKey = new PublicKey(publicKey);
-    const sig = await drive.deleteFile(pubKey, fileUrl);
-    console.log(sig);
-  };
-
-  const fileUrl = `https://shdw-drive.genesysgo.net/${publicKey}/${file.name}`;
-
-  return (
-    <Menu position="bottom-end" offset={11} withArrow shadow="lg" width={200}>
-      <Menu.Target>
-        <UnstyledButton>
-          <div className="px-3">
-            <div className="block ml-auto mr-5 h-[3px] w-[3px] bg-gray-400 rounded-full"></div>
-            <div className="block ml-auto mr-5 h-[3px] w-[3px] bg-gray-400 rounded-full mt-1"></div>
-            <div className="block ml-auto mr-5 h-[3px] w-[3px] bg-gray-400 rounded-full mt-1"></div>
-          </div>
-        </UnstyledButton>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Menu.Label>{file.name}</Menu.Label>
-        <Menu.Item
-          leftSection={
-            <IconMessageCircle style={{ width: rem(14), height: rem(14) }} />
-          }
-        >
-          Copy Link
-        </Menu.Item>
-        <Menu.Item
-          leftSection={
-            <IconArrowsLeftRight style={{ width: rem(14), height: rem(14) }} />
-          }
-        >
-          Update File
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item
-          color="red"
-          leftSection={
-            <IconTrash style={{ width: rem(14), height: rem(14) }} />
-          }
-          onClick={() => deleteFile(fileUrl)}
-        >
-          Delete File
-        </Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
-  );
-};
+import { MdLockOpen, MdLockOutline } from "react-icons/md";
 
 const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
   const [accountDetails, setAccountDetails] = useState<any>(null);
@@ -202,13 +31,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
   const wallet = useWallet();
   const [animate, setAnimate] = useState(false);
 
-  useEffect(() => {
-    fetchStorageAccountDetails();
-    setAnimate(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallet, connection, publicKey]);
-
-  const fetchStorageAccountDetails = async () => {
+  const fetchStorageAccountDetails = useCallback(async () => {
     if (!wallet || !wallet.connected || !publicKey) {
       console.error("Wallet not connected or public key is invalid.");
       return;
@@ -239,12 +62,12 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
     } catch (error) {
       console.error("Error fetching storage account details:", error);
     }
-  };
-
-  const refreshFiles = useCallback(async () => {
-    await fetchStorageAccountDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet, connection, publicKey]);
+
+  useEffect(() => {
+    fetchStorageAccountDetails();
+    setAnimate(true);
+  }, [fetchStorageAccountDetails]);
 
   const gridStyle = useMemo(
     () => ({
@@ -280,7 +103,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
   };
 
   return (
-    <div className={`text-white exo-2 p-4 ${animate ? 'fade-in' : 'hidden'}`}>
+    <div className={`text-white exo-2 p-4 ${animate ? "fade-in" : "hidden"}`}>
       <div className="flex flex-row justify-between mb-4 items-center">
         <div className="w-full">
           <div className="flex flex-row justify-between">
@@ -289,7 +112,8 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
             </p>
             <div className="flex gap-4 text-gray-200">
               <p className="my-auto text-sm font-semibold text-gray-300 mr-3">
-                <span className="text-gray-500 text-xs mr-1">Owner</span> {formatAddress(accountDetails.owner1.toString())}
+                <span className="text-gray-500 text-xs mr-1">Owner</span>{" "}
+                {formatAddress(accountDetails.owner1.toString())}
               </p>
               <p className="py-2 px-4 bg-none border border-[#11FA98] text-black text-sm font-semibold rounded-lg shadow-md">
                 {accountDetails.immutable ? (
@@ -329,7 +153,6 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
                   </div>
                 )}
               </p>
-
               <p className="ml-5 mb-2 font-semibold">
                 <FaHardDrive className="h-6 w-6 my-auto text-[#6d787e]" />
               </p>
@@ -359,8 +182,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
             <div className="flex flex-row my-auto">
               {viewMode === "grid" && (
                 <Slider
-                color={"#11FA98"}
-
+                  color={"#11FA98"}
                   defaultValue={4}
                   max={10}
                   min={3}
@@ -394,14 +216,16 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
             Storage Account is empty
           </div>
         ) : viewMode === "grid" ? (
-          <div style={gridStyle} className="grid gap-4 mt-4 fade-in overflow-auto">
+          <div
+            style={gridStyle}
+            className="grid gap-4 mt-4 fade-in overflow-auto"
+          >
             {files.map((file, index) => (
               <FileCard
                 key={index}
                 fileName={file}
                 fileUrl={`https://shdw-drive.genesysgo.net/${publicKey}/${file}`}
                 publicKey={publicKey}
-                
               />
             ))}
           </div>

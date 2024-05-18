@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { CgSpinnerAlt } from "react-icons/cg";
-import { Alert } from '@mantine/core';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { Alert } from "@mantine/core";
+import {
+  IconCheck,
+  IconX,
+  IconInfoCircle,
+  IconLoader,
+} from "@tabler/icons-react";
 
-interface ToastState {
+interface ToastProps {
   show: boolean;
   message: string;
-  details: string;
   type: "success" | "error" | "info" | "loading";
+  onClose: () => void;
 }
 
-const CustomToast: React.FC<ToastState & { onClose: () => void }> = ({
+const CustomToast: React.FC<ToastProps> = ({
   show,
   message,
   type,
@@ -36,29 +40,45 @@ const CustomToast: React.FC<ToastState & { onClose: () => void }> = ({
     }
   }, [isVisible, type, onClose]);
 
-  let backgroundColor = "bg-green-500";
-  if (type === "error") backgroundColor = "bg-red-500";
-  if (type === "loading") backgroundColor = "bg-blue-500";
+  let color = "";
+  let icon = <IconInfoCircle />;
+  let textColor = "text-black"; // default text color
 
-  const animationClass = isVisible
-    ? "translate-y-0 opacity-100"
-    : "translate-y-full opacity-0";
-
-    const icon = <IconInfoCircle />;
+  switch (type) {
+    case "success":
+      color = "#11FA98";
+      icon = <IconCheck />;
+      textColor = "text-gray-600";
+      break;
+    case "error":
+      color = "red";
+      icon = <IconX />;
+      textColor = "text-red-600";
+      break;
+    case "loading":
+      color = "gray";
+      icon = <IconLoader className="animate-spin" />;
+      textColor = "text-gray-600";
+      break;
+  }
 
   return (
-    <>
-      <div
-        className={` fixed bottom-4 right-4 items-center `}
-        style={{ height: "100px", width: "300px" }}
-      >
-        {isVisible && (
-          <Alert variant="filled" color="blue" title="Alert" icon={icon}>
-          {message}
+    <div
+      className={`fixed bottom-4 right-4 items-center z-50`}
+      style={{ height: "100px", width: "300px" }}
+    >
+      {isVisible && (
+        <Alert
+          variant="filled"
+          color={color}
+          title={type.charAt(0).toUpperCase() + type.slice(1)}
+          icon={icon}
+          c="black"
+        >
+          <p className={`text-black ${textColor}`}>{message}</p>
         </Alert>
-        )}
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 

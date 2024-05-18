@@ -1,7 +1,7 @@
 import React, { useState, useCallback, Suspense } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Toast from "@/components/Toast";
-import StorageAccountItem from "./StorageAccountItem";
+import StorageAccountItem from "./DriveItem";
 import useStorageAccounts from "@/hooks/useStorageAccounts";
 import { formatBytes } from "@/utils/formatBytes";
 import { useSHDWDrive } from "@/contexts/ShadowDriveProvider";
@@ -41,43 +41,52 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
     setToast({ show: true, message, type, details });
   };
 
-  const handleClick = useCallback((publicKey: string) => {
-    router.push(`/account/${publicKey}`);
-  }, [router]);
+  const handleClick = useCallback(
+    (publicKey: string) => {
+      router.push(`/account/${publicKey}`);
+    },
+    [router]
+  );
 
-  const handleDeleteStorageAccount = useCallback(async (publicKey: string) => {
-    if (!drive || !wallet) return;
-    showToast("Deleting storage account...", "loading");
-    try {
-      const sig = await drive.deleteStorageAccount(new PublicKey(publicKey));
-      const updatedAccounts = accounts.filter(
-        (account) => account.publicKey.toBase58() !== publicKey
-      );
-      setAccounts(updatedAccounts);
-      showToast(
-        "File deleted successfully!",
-        "success",
-        `Transaction signature: ${sig}`
-      );
-    } catch (error) {
-      showToast(`Failed to delete storage account: ${error}`, "error");
-    }
-  }, [drive, wallet, accounts, setAccounts]);
+  const handleDeleteStorageAccount = useCallback(
+    async (publicKey: string) => {
+      if (!drive || !wallet) return;
+      showToast("Deleting storage account...", "loading");
+      try {
+        const sig = await drive.deleteStorageAccount(new PublicKey(publicKey));
+        const updatedAccounts = accounts.filter(
+          (account) => account.publicKey.toBase58() !== publicKey
+        );
+        setAccounts(updatedAccounts);
+        showToast(
+          "File deleted successfully!",
+          "success",
+          `Transaction signature: ${sig}`
+        );
+      } catch (error) {
+        showToast(`Failed to delete storage account: ${error}`, "error");
+      }
+    },
+    [drive, wallet, accounts, setAccounts]
+  );
 
-  const handleMakeStorageImmutable = useCallback(async (publicKey: string) => {
-    if (!drive || !wallet) return;
-    showToast("Making storage account immutable...", "loading");
-    try {
-      const sig = await drive.makeStorageImmutable(new PublicKey(publicKey));
-      showToast(
-        "Storage account made immutable successfully!",
-        "success",
-        `Transaction signature: ${sig}`
-      );
-    } catch (error) {
-      showToast(`Error making storage immutable: ${error}`, "error");
-    }
-  }, [drive, wallet]);
+  const handleMakeStorageImmutable = useCallback(
+    async (publicKey: string) => {
+      if (!drive || !wallet) return;
+      showToast("Making storage account immutable...", "loading");
+      try {
+        const sig = await drive.makeStorageImmutable(new PublicKey(publicKey));
+        showToast(
+          "Storage account made immutable successfully!",
+          "success",
+          `Transaction signature: ${sig}`
+        );
+      } catch (error) {
+        showToast(`Error making storage immutable: ${error}`, "error");
+      }
+    },
+    [drive, wallet]
+  );
 
   const SkeletonLoader = () => {
     return (
