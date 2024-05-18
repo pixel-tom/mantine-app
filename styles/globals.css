@@ -4,6 +4,7 @@
 
 html {
   background-color: #24292d;
+  overflow: hidden;
 }
 
 @layer utilities {

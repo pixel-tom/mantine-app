@@ -143,7 +143,7 @@ const FileCard: React.FC<FileCardProps> = ({
               </UnstyledButton>
             </Menu.Target>
 
-            <Menu.Dropdown bg="#181c20">
+            <Menu.Dropdown bg="#292e31">
               <Menu.Label>Application</Menu.Label>
               <Menu.Item
                 leftSection={

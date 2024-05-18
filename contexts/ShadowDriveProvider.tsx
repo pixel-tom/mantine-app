@@ -6,7 +6,7 @@ import { SOLANA_API } from '@/constants/constants';
 
 interface SHDWDriveContextType {
   drive: ShdwDrive | null;
-  
+  connection: Connection | null;
 }
 
 interface SHDWDriveProviderProps {
@@ -18,21 +18,22 @@ const SHDWDriveContext = createContext<SHDWDriveContextType | null>(null);
 export const SHDWDriveProvider: React.FC<SHDWDriveProviderProps> = ({ children }) => {
   const wallet = useWallet();
   const [drive, setDrive] = useState<ShdwDrive | null>(null);
+  const { connection } = useConnection();
 
   useEffect(() => {
-    const conn = new Connection(SOLANA_API, 'processed');
+    
     const initializeDrive = async () => {
       if (wallet.connected) {
-        const driveInstance = new ShdwDrive(conn, wallet);
+        const driveInstance = new ShdwDrive(connection, wallet);
         setDrive(driveInstance);
       }
     };
 
     initializeDrive();
-  }, [wallet]);
+  }, [connection, wallet]);
 
   return (
-    <SHDWDriveContext.Provider value={{ drive }}>
+    <SHDWDriveContext.Provider value={{ drive, connection }}>
       {children}
     </SHDWDriveContext.Provider>
   );
