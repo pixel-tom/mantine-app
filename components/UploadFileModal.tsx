@@ -7,46 +7,38 @@ import {
   rem,
   useMantineTheme,
   Center,
-  UnstyledButton,
 } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { IconDownload, IconX } from "@tabler/icons-react";
 import Image from "next/image";
-import Toast from "./Toast";
-import { useSHDWDrive } from "@/contexts/ShadowDriveProvider"; // Correct import path
+import { useSHDWDrive } from "@/contexts/ShadowDriveProvider";
 import classes from "@/styles/Dropzone.module.css";
+import { useToast } from "@/contexts/ToastContext";
 
 interface UploadProps {
   selectedAccount: string | null;
+  onUploadSuccess: () => void;
 }
 
-interface ToastState {
-  show: boolean;
-  message: string;
-  details: string;
-  type: "success" | "error" | "info" | "loading";
-}
-
-const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
-  const [file, setFile] = useState<File | null>(null);
-  const [fileSize, setFileSize] = useState<number | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [toast, setToast] = useState<ToastState>({
-    show: false,
-    message: "",
-    details: "",
-    type: "info",
-  });
+const Upload: React.FC<UploadProps> = ({ selectedAccount, onUploadSuccess }) => {
+  const [ file, setFile ] = useState<File | null>(null);
+  const [ fileSize, setFileSize ] = useState<number | null>(null);
+  const [ fileName, setFileName ] = useState<string | null>(null);
+  const [ showModal, setShowModal ] = useState<boolean>(false);
   const { drive } = useSHDWDrive();
+  const { showToast } = useToast();
   const wallet = useWallet();
   const theme = useMantineTheme();
-  const [showModal, setShowModal] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const openRef = useRef<() => void>(null);
+  
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         setShowModal(false);
       }
     };
@@ -57,56 +49,28 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
 
   const handleFileUpload = async () => {
     if (!file) {
-      setToast({
-        show: true,
-        message: "Please select a file to upload.",
-        details: "",
-        type: "error",
-      });
-      return;
+      throw new Error("Select a file to upload.");
     }
-
     if (!selectedAccount) {
-      setToast({
-        show: true,
-        message: "Please select a storage account.",
-        details: "",
-        type: "error",
-      });
-      return;
+      throw new Error("Select an account upload to.");
     }
-
-    if (!drive || !wallet) return;
-
+    if (!wallet) {
+      throw new Error("Wallet is not connected.");
+    }
+    if (!drive) {
+      throw new Error("ShdwDrive is not connected.");
+    }
     const publicKey = new PublicKey(selectedAccount);
-
     try {
-      setToast({
-        show: true,
-        message: "Uploading file...",
-        details: "",
-        type: "loading",
-      });
+      showToast("Uploading File...", "loading");
       await drive.uploadFile(publicKey, file);
-      setToast({
-        show: true,
-        message: "File uploaded successfully!",
-        details: "",
-        type: "success",
-      });
-    } catch (error) {
+      showToast("File Uploaded!", "success");
+      setShowModal(false);
+      onUploadSuccess();
+    } catch (error: any) {
       console.error("Error uploading file:", error);
-      setToast({
-        show: true,
-        message: "Error uploading file.",
-        details: "",
-        type: "error",
-      });
+      showToast(`${error.message}`, "error");
     }
-  };
-
-  const closeToast = () => {
-    setToast({ ...toast, show: false });
   };
 
   return (
@@ -119,8 +83,11 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
       </button>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
-          <div ref={modalRef} className="bg-[#292e31] max-w-[800px] w-full rounded-lg shadow-lg p-10 relative">
+        <div className="fixed inset-0 bg-black blur bg-opacity-50 flex justify-center items-center z-[1000]">
+          <div
+            ref={modalRef}
+            className="bg-[#292e31] max-w-[800px] w-full rounded-lg shadow-lg p-10 relative"
+          >
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -184,7 +151,9 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                         </Dropzone.Reject>
                         <Dropzone.Idle>
                           <Image
-                            src={"https://assets-global.website-files.com/653ae95e36bd81f87299010a/653ae95e36bd81f87299020e_10A%20S%20Logomark.svg"}
+                            src={
+                              "https://assets-global.website-files.com/653ae95e36bd81f87299010a/653ae95e36bd81f87299020e_10A%20S%20Logomark.svg"
+                            }
                             alt={""}
                             height={70}
                             width={70}
@@ -192,12 +161,23 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                         </Dropzone.Idle>
                       </Group>
 
-                      <Text ta="center" fw={700} fz="lg" mt="xl" className="text-gray-300">
+                      <Text
+                        ta="center"
+                        fw={700}
+                        fz="lg"
+                        mt="xl"
+                        className="text-gray-300"
+                      >
                         <Dropzone.Accept>Drop files here</Dropzone.Accept>
 
                         <Dropzone.Idle>Upload Files</Dropzone.Idle>
                       </Text>
-                      <Text ta="center" fz="sm" mt="xs" className="text-gray-500">
+                      <Text
+                        ta="center"
+                        fz="sm"
+                        mt="xs"
+                        className="text-gray-500"
+                      >
                         Drag&apos;n&apos;drop files here to upload.
                       </Text>
                     </div>
@@ -213,9 +193,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
                 </div>
                 <div className="flex mt-10 space-x-2 max-h-20 overflow-auto">
                   {fileName && (
-                    <p className="text-sm text-gray-300">
-                      {fileName}
-                    </p>
+                    <p className="text-sm text-gray-300">{fileName}</p>
                   )}
                   {fileSize && (
                     <p className="mt-auto text-xs text-gray-500">
@@ -226,7 +204,9 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount }) => {
               </div>
 
               <div className="flex justify-end gap-4 mt-10">
-                <p className="mt-auto text-gray-500 text-xs">There are no fees for uploading files to ShdwDrive.</p>
+                <p className="mt-auto text-gray-500 text-xs">
+                  There are no fees for uploading files to ShdwDrive.
+                </p>
                 <button
                   type="submit"
                   className="py-2 px-6 border border-[#11FA98] font-semibold text-sm text-white rounded-lg shadow"

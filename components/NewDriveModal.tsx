@@ -3,32 +3,18 @@ import { ShdwDrive } from "@shadow-drive/sdk";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import Image from "next/image";
 import { MdInfo } from "react-icons/md";
-import Toast from "./Toast";
 import { useRouter } from "next/router";
-
-interface ToastState {
-  show: boolean;
-  message: string;
-  details: string;
-  type: "success" | "error" | "info" | "loading";
-}
+import { useToast } from "@/contexts/ToastContext";
 
 const CreateStorageAccount: React.FC = () => {
-  const [accountName, setAccountName] = useState<string>("");
-  const [storageSize, setStorageSize] = useState<number>(10);
-  const [storageUnit, setStorageUnit] = useState<string>("MB");
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [toast, setToast] = useState<ToastState>({
-    show: false,
-    message: "",
-    details: "",
-    type: "info",
-  });
-  const router = useRouter();
-
-  const wallet = useWallet();
+  const [ accountName, setAccountName ] = useState<string>("");
+  const [ storageSize, setStorageSize ] = useState<number>(10);
+  const [ storageUnit, setStorageUnit ] = useState<string>("MB");
+  const [ showModal, setShowModal ] = useState<boolean>(false);
+  const { showToast } = useToast();
   const { connection } = useConnection();
-
+  const wallet = useWallet();
+  const router = useRouter();
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -45,63 +31,29 @@ const CreateStorageAccount: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleCreateAccount = async () => {
-    if (!wallet.connected) {
-      setToast({
-        show: true,
-        message: "Please connect your wallet.",
-        details: "",
-        type: "error",
-      });
-      return;
+  const handleCreateDrive = async () => {
+    try {
+      showToast("Creating new drive...", "loading");
+      if (!wallet.connected) {
+        throw new Error("Wallet is not connected");
+        return;
+      }
+      if (!storageSize) {
+        throw new Error("Select a storage size.");
+        return;
+      }
+      const size = `${storageSize}${storageUnit}`;
+      const drive = new ShdwDrive(connection, wallet);
+      await drive.init();
+      const newAccount = await drive.createStorageAccount(accountName, size);
+      setShowModal(false);
+      showToast("Drive created!", "success");
+      setShowModal(false);
+      router.push(`/account/${newAccount.shdw_bucket}`);
+    } catch (error: any) {
+      showToast(`${error.message.toString()}`, "error");
+      console.error("Error creating new drive:", error);
     }
-
-    if (!storageSize) {
-      setToast({
-        show: true,
-        message: "Please enter a Storage Size.",
-        details: "",
-        type: "error",
-      });
-      return;
-    }
-
-    if (!wallet.connected) {
-      alert("Please connect your wallet first.");
-      return;
-    }
-
-    setToast({
-      show: true,
-      message: "Creating account...",
-      details: "",
-      type: "loading",
-    });
-
-    const size = `${storageSize}${storageUnit}`;
-    const drive = new ShdwDrive(connection, wallet);
-    await drive.init();
-    const newAccount = await drive.createStorageAccount(accountName, size);
-    setShowModal(false);
-    setToast({
-      show: true,
-      message: "File uploaded successfully!",
-      details: "",
-      type: "success",
-    });
-    console.log(newAccount);
-    setToast({
-      show: true,
-      message: "Error uploading file.",
-      details: "",
-      type: "error",
-    });
-    setShowModal(false);
-    router.push(`/account/${newAccount.shdw_bucket}`);
-  };
-
-  const closeToast = () => {
-    setToast({ ...toast, show: false });
   };
 
   return (
@@ -159,7 +111,7 @@ const CreateStorageAccount: React.FC = () => {
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
                   placeholder="ex. Ohmies"
-                  className="mt-1 text-gray-100 block w-full px-3 py-2 bg-[#434343] border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400"
+                  className="mt-1 text-gray-100 block w-full px-3 py-2 bg-[#181c20] border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-green-400 focus:border-green-400"
                 />
               </div>
 
@@ -177,14 +129,14 @@ const CreateStorageAccount: React.FC = () => {
                     value={storageSize}
                     onChange={(e) => setStorageSize(Number(e.target.value))}
                     placeholder="Size"
-                    className="flex-1 max-w-48 text-gray-100 px-3 py-2 bg-[#434343] border border-gray-600 rounded-l-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400"
+                    className="flex-1 max-w-48 text-gray-100 px-3 py-2 bg-[#181c20] border border-gray-600 rounded-l-md shadow-sm focus:outline-none focus:ring-green-400 focus:border-green-400"
                     min={1}
                     required
                   />
                   <select
                     value={storageUnit}
                     onChange={(e) => setStorageUnit(e.target.value)}
-                    className="text-gray-200 px-3 bg-[#434343] border-b border-t border-r border-gray-600 rounded-r-md shadow-sm focus:outline-none focus:ring-blue-400 focus:border-blue-400"
+                    className="text-gray-200 px-3 bg-[#181c20] border-b border-t border-r border-gray-600 rounded-r-md shadow-sm focus:outline-none focus:ring-green-400 focus:border-green-400"
                   >
                     <option value="KB">KB</option>
                     <option value="MB">MB</option>
@@ -198,8 +150,8 @@ const CreateStorageAccount: React.FC = () => {
                   You will be charged SOL and $SHDW
                 </p>
                 <button
-                  onClick={handleCreateAccount}
-                  className="flex-end py-2 px-5 bg-[#272727] text-white border border-[#11FA98] rounded-md"
+                  onClick={handleCreateDrive}
+                  className="flex-end py-2 px-5 bg-[#181c20] text-white border border-[#11FA98] rounded-md"
                 >
                   Create
                 </button>

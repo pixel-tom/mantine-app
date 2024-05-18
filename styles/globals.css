@@ -38,3 +38,7 @@ html {
 .fade-in {
   animation: fadeIn 0.8s ease-in-out forwards;
 }
+
+.spinner {
+  @apply border-t-4 border-b-4 border-green-400 rounded-full w-12 h-12 animate-spin;
+}

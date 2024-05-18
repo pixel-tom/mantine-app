@@ -2,7 +2,6 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { Connection } from '@solana/web3.js';
 import { ShdwDrive } from "@shadow-drive/sdk"; // Replace with the actual SDK import if it's different
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { SOLANA_API } from '@/constants/constants';
 
 interface SHDWDriveContextType {
   drive: ShdwDrive | null;

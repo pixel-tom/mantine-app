@@ -4,19 +4,15 @@ import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import {
   Menu,
-  Button,
   rem,
   UnstyledButton,
-  Text,
-  HoverCard,
-  Group,
 } from "@mantine/core";
 import {
   IconMessageCircle,
   IconTrash,
   IconArrowsLeftRight,
 } from "@tabler/icons-react";
-import { useToast } from '@/contexts/ToastContext'; // <-- Import useToast hook
+import { useToast } from '@/contexts/ToastContext';
 
 type FileDetail = {
   name: string;
@@ -31,8 +27,8 @@ type FileMenuProps = {
 const FileMenu: FC<FileMenuProps> = ({ file, publicKey }) => {
   const { connection } = useConnection();
   const wallet = useWallet();
-  const [copySuccess, setCopySuccess] = useState("");
-  const { showToast } = useToast(); // <-- Use useToast hook
+  const [ copySuccess, setCopySuccess ] = useState("");
+  const { showToast } = useToast();
 
   const deleteFile = async (fileUrl: string) => {
     const drive = await new ShdwDrive(connection, wallet).init();
@@ -48,12 +44,12 @@ const FileMenu: FC<FileMenuProps> = ({ file, publicKey }) => {
       .writeText(fileUrl)
       .then(() => {
         setCopySuccess("Link copied!");
-        showToast("Link copied to clipboard", "success"); // <-- Trigger success toast
+        showToast("Link copied to clipboard", "success");
       })
       .catch((err) => {
         console.error("Failed to copy: ", err);
         setCopySuccess("Failed to copy link");
-        showToast("Failed to copy link", "error"); // <-- Trigger error toast
+        showToast("Failed to copy link", "error");
       });
   };
 

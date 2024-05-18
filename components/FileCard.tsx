@@ -39,7 +39,7 @@ const FileCard: React.FC<FileCardProps> = ({
   const wallet = useWallet();
 
   const fileIcon = (fileName: string) => {
-    const fileExtension = fileName.split(".").pop()?.toLowerCase(); // Using toLowerCase to handle case sensitivity
+    const fileExtension = fileName.split(".").pop()?.toLowerCase();
     switch (fileExtension) {
       case "pdf":
         return <BiSolidFilePdf size={54} />;
@@ -61,8 +61,7 @@ const FileCard: React.FC<FileCardProps> = ({
       case "tsx":
       case "html":
       case "css":
-      case "sol": // Solana smart contract (Solidity)
-      case "rs": // Solana smart contract (Rust)
+      case "rs":
         return <PiFileCodeFill size={54} />;
       default:
         return "/icons/file-icon.png";
@@ -143,7 +142,7 @@ const FileCard: React.FC<FileCardProps> = ({
               </UnstyledButton>
             </Menu.Target>
 
-            <Menu.Dropdown bg="#292e31">
+            <Menu.Dropdown bg="#181c20">
               <Menu.Label>Application</Menu.Label>
               <Menu.Item
                 leftSection={

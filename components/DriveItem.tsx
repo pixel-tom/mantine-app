@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { Menu, rem, UnstyledButton } from "@mantine/core";
 import { IconSettings, IconTrash } from "@tabler/icons-react";
+import { useToast } from "@/contexts/ToastContext";
+import { useSHDWDrive } from "@/contexts/ShadowDriveProvider";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 interface StorageAccountItemProps {
   account: {
@@ -9,7 +12,6 @@ interface StorageAccountItemProps {
     details?: any;
   };
   onClick: (publicKey: string) => void;
-  makeStorageImmutable: (publicKey: string) => Promise<void>;
   deleteStorageAccount: (publicKey: string) => Promise<void>;
   formatBytes: (bytes: number, decimals?: number) => string;
 }
@@ -17,13 +19,35 @@ interface StorageAccountItemProps {
 const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
   account,
   onClick,
-  makeStorageImmutable,
   deleteStorageAccount,
   formatBytes,
 }) => {
+  const { drive } = useSHDWDrive();
+  const wallet = useWallet();
+  const { showToast } = useToast();
+
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+
+  const handleMakeStorageImmutable = useCallback(
+    async (publicKey: string) => {
+      showToast("Making storage account immutable...", "loading");
+      try {
+        if (!drive) {
+          throw new Error("Drive is not connected");
+        }
+        if (!wallet || !wallet.connected) {
+          throw new Error("Wallet is not connected");
+        }
+        const sig = await drive.makeStorageImmutable(new PublicKey(publicKey));
+        showToast(`Drive is now Immutable!`, "success");
+      } catch (error: any) {
+        showToast(`${error.message}`, "error");
+      }
+    },
+    [drive, wallet, showToast]
+  );
 
   return (
     <li className="py-5 relative hover:bg-[#24292d]  focus:border focus:border-black focus-visible:border focus-visible:border-black rounded-md">
@@ -58,11 +82,11 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
               </UnstyledButton>
             </Menu.Target>
 
-            <Menu.Dropdown bg="#232a2d">
+            <Menu.Dropdown bg="#24292d">
               <Menu.Label>{account.details.identifier}</Menu.Label>
               <Menu.Item
                 onClick={() =>
-                  makeStorageImmutable(account.publicKey.toString())
+                  handleMakeStorageImmutable(account.publicKey.toString())
                 }
                 leftSection={
                   <IconSettings style={{ width: rem(14), height: rem(14) }} />

@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ShdwDrive } from "@shadow-drive/sdk";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import Toast from "./Toast";
 import {
   splTokenTemplate,
   nftTemplate,
@@ -13,26 +11,17 @@ import { Menu, rem } from "@mantine/core";
 import {
   IconArrowsLeftRight,
   IconMessageCircle,
-  IconPhoto,
   IconSettings,
 } from "@tabler/icons-react";
-import Editor from "@monaco-editor/react";
 import CodeMirror from "@uiw/react-codemirror";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
-import { atomone } from "@uiw/codemirror-theme-atomone"
-import { tokyoNight} from "@uiw/codemirror-theme-tokyo-night"
-import { json } from '@codemirror/lang-json'
-
+import { json } from "@codemirror/lang-json";
+import { useToast } from "@/contexts/ToastContext";
+import { useSHDWDrive } from "@/contexts/ShadowDriveProvider";
 
 interface CreateProps {
   selectedAccount: string | null;
-}
-
-interface ToastState {
-  show: boolean;
-  message: string;
-  details: string;
-  type: "success" | "error" | "info" | "loading";
+  onUploadSuccess: () => void;
 }
 
 type TemplateKeys =
@@ -41,19 +30,17 @@ type TemplateKeys =
   | "Other Useful File"
   | "Other Useful File 2";
 
-const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
+const Create: React.FC<CreateProps> = ({
+  selectedAccount,
+  onUploadSuccess,
+}) => {
+  const wallet = useWallet();
   const [content, setContent] = useState<string>("");
   const [fileType, setFileType] = useState<string | null>(null);
-  const [toast, setToast] = useState<ToastState>({
-    show: false,
-    message: "",
-    details: "",
-    type: "info",
-  });
-  const { connection } = useConnection();
-  const wallet = useWallet();
-  const [showTemplateModal, setShowTemplateModal] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const { showToast } = useToast();
+  const { drive } = useSHDWDrive();
 
   const templates: Record<TemplateKeys, string> = {
     "SPL Token": splTokenTemplate,
@@ -68,7 +55,7 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
       ) {
-        setShowTemplateModal(false);
+        setShowModal(false);
       }
     };
 
@@ -77,60 +64,35 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
   }, []);
 
   const handleFileUpload = async () => {
-    if (!content || !fileType) {
-      setToast({
-        show: true,
-        message: "Please enter content and select a file type.",
-        details: "",
-        type: "error",
-      });
-      return;
-    }
-
-    if (!selectedAccount) {
-      setToast({
-        show: true,
-        message: "Please select a storage account.",
-        details: "",
-        type: "error",
-      });
-      return;
-    }
-
-    const drive = await new ShdwDrive(connection, wallet).init();
-    const publicKey = new PublicKey(selectedAccount);
-
     try {
-      setToast({
-        show: true,
-        message: "Uploading file...",
-        details: "",
-        type: "loading",
-      });
-
+      if (!fileType) {
+        throw new Error("Select a file type.");
+        return;
+      }
+      if (!content) {
+        throw new Error("Select a file to upload.");
+      }
+      if (!selectedAccount) {
+        throw new Error("Select an account upload to.");
+      }
+      if (!wallet) {
+        throw new Error("Wallet is not connected.");
+      }
+      if (!drive) {
+        throw new Error("ShdwDrive is not connected.");
+      }
+      const publicKey = new PublicKey(selectedAccount);
+      showToast("Uploading File...", "loading");
       const file = new Blob([content], { type: fileType });
-      const fileName = `file.${fileType.split("/")[1]}`;
-
+      const fileName = `file.${fileType?.split("/")[1]}`;
       await drive.uploadFile(publicKey, new File([file], fileName));
-      setToast({
-        show: true,
-        message: "File uploaded successfully!",
-        details: "",
-        type: "success",
-      });
-    } catch (error) {
+      showToast("File Uploaded!", "success");
+      setShowModal(false);
+      onUploadSuccess();
+    } catch (error: any) {
       console.error("Error uploading file:", error);
-      setToast({
-        show: true,
-        message: "Error uploading file.",
-        details: "",
-        type: "error",
-      });
+      showToast(`${error.message}`, "error");
     }
-  };
-
-  const closeToast = () => {
-    setToast({ ...toast, show: false });
   };
 
   return (
@@ -145,7 +107,7 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
         <Menu.Dropdown bg="#181c20">
           <Menu.Label>Create</Menu.Label>
           <Menu.Item
-            onClick={() => setShowTemplateModal(true)}
+            onClick={() => setShowModal(true)}
             leftSection={
               <IconSettings style={{ width: rem(14), height: rem(14) }} />
             }
@@ -159,16 +121,7 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
           >
             Copy Link
           </Menu.Item>
-          <Menu.Item
-            leftSection={
-              <IconPhoto style={{ width: rem(14), height: rem(14) }} />
-            }
-          >
-            Gallery
-          </Menu.Item>
-
           <Menu.Divider />
-
           <Menu.Item
             leftSection={
               <IconArrowsLeftRight
@@ -181,7 +134,7 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
         </Menu.Dropdown>
       </Menu>
 
-      {showTemplateModal && (
+      {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
           <div
             ref={modalRef}
@@ -195,7 +148,7 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
               className="flex flex-col"
             >
               <button
-                onClick={() => setShowTemplateModal(false)}
+                onClick={() => setShowModal(false)}
                 className="absolute top-0 right-2 m-2 text-lg font-bold text-gray-900"
               >
                 <p className="text-gray-300 text-2xl">&times;</p>
@@ -226,15 +179,15 @@ const Create: React.FC<CreateProps> = ({ selectedAccount }) => {
               </div>
               <div className="mb-4">
                 <CodeMirror
-                value={content}
-                height="400px"
-                theme={vscodeDark}
-                extensions={[json()]}
-                onChange={(value) => setContent(value || "")}
-                className="text-sm"
-              />
+                  value={content}
+                  height="400px"
+                  theme={vscodeDark}
+                  extensions={[json()]}
+                  onChange={(value) => setContent(value || "")}
+                  className="text-sm"
+                />
               </div>
-              
+
               <div className="ml-auto mb-4 w-1/3">
                 <select
                   value={fileType || ""}

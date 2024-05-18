@@ -2,9 +2,8 @@ import React, { useState, useEffect, FC, useMemo, useCallback } from "react";
 import { ShdwDrive } from "@shadow-drive/sdk";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import Upload from "@/components/UploadFile";
+import Upload from "@/components/UploadFileModal";
 import Create from "@/components/Create";
-import Toast from "@/components/Toast";
 import FileCard from "@/components/FileCard";
 import ListView from "@/components/ListView";
 import { LuLayoutGrid } from "react-icons/lu";
@@ -12,14 +11,15 @@ import { IoIosList } from "react-icons/io";
 import {
   Slider,
   Text,
-  rem,
-  Button,
   UnstyledButton,
   HoverCard,
   Group,
 } from "@mantine/core";
 import { FaHardDrive } from "react-icons/fa6";
 import { MdLockOpen, MdLockOutline } from "react-icons/md";
+import Loading from "./Loading";
+import { useSHDWDrive } from "@/contexts/ShadowDriveProvider";
+import { useToast } from "@/contexts/ToastContext";
 
 const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
   const [accountDetails, setAccountDetails] = useState<any>(null);
@@ -30,6 +30,50 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
   const { connection } = useConnection();
   const wallet = useWallet();
   const [animate, setAnimate] = useState(false);
+  const { drive } = useSHDWDrive();
+  const { showToast } = useToast();
+
+  const handleMakeStorageImmutable = useCallback(
+    async (publicKey: string) => {
+      showToast("Making storage account immutable...", "loading");
+      try {
+        if (!drive) {
+          throw new Error("Drive is not connected");
+        }
+        if (!wallet || !wallet.connected) {
+          throw new Error("Wallet is not connected");
+        }
+        const sig = await drive.makeStorageImmutable(new PublicKey(publicKey));
+        showToast(`Drive is now Immutable!`, "success");
+      } catch (error: any) {
+        showToast(`${error.message}`, "error");
+      }
+    },
+    [drive, wallet, showToast]
+  );
+
+  const fetchFiles = useCallback(async () => {
+    if (!wallet || !wallet.connected || !publicKey) {
+      console.error("Wallet not connected or public key is invalid.");
+      return;
+    }
+
+    try {
+      const drive = new ShdwDrive(connection, wallet);
+      await drive.init();
+      const pubKey = new PublicKey(publicKey);
+
+      const listItems = await drive.listObjects(pubKey);
+      if (!listItems || !listItems.keys) {
+        console.error("Failed to retrieve list of objects.");
+        return;
+      }
+
+      setFiles(listItems.keys);
+    } catch (error) {
+      console.error("Error fetching files:", error);
+    }
+  }, [wallet, connection, publicKey]);
 
   const fetchStorageAccountDetails = useCallback(async () => {
     if (!wallet || !wallet.connected || !publicKey) {
@@ -50,19 +94,12 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
 
       setAccountDetails(acct);
 
-      const listItems = await drive.listObjects(pubKey);
-      if (!listItems || !listItems.keys) {
-        console.error("Failed to retrieve list of objects.");
-        return;
-      }
-
-      setFiles(listItems.keys);
-      console.log(acct);
+      await fetchFiles();
       setIsOwner(acct.owner1.toString() === wallet.publicKey?.toString());
     } catch (error) {
       console.error("Error fetching storage account details:", error);
     }
-  }, [wallet, connection, publicKey]);
+  }, [wallet, connection, publicKey, fetchFiles]);
 
   useEffect(() => {
     fetchStorageAccountDetails();
@@ -83,7 +120,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
   );
 
   if (!accountDetails) {
-    return <div>Loading account details...</div>;
+    return <Loading />;
   }
 
   const marks = [
@@ -117,22 +154,27 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
               </p>
               <p className="py-2 px-4 bg-none border border-[#11FA98] text-black text-sm font-semibold rounded-lg shadow-md">
                 {accountDetails.immutable ? (
-                  <div className="flex gap-1 text-sm font-bold text-gray-200">
+                  <div className="flex text-sm font-bold text-gray-200">
                     <Group justify="center">
                       <HoverCard shadow="md" closeDelay={700} withArrow>
                         <HoverCard.Target>
-                          <Button>
-                            <MdLockOutline className="my-auto text-gray-200 h-4 w-4" />
-                          </Button>
+                          <UnstyledButton>
+                            <MdLockOutline className="text-gray-200 h-4 w-4" />
+                          </UnstyledButton>
                         </HoverCard.Target>
-                        <HoverCard.Dropdown>
-                          <Text size="sm">Account is Immutable</Text>
+                        <HoverCard.Dropdown bg={'#181c20'}>
+                          <Text size="sm" className="text-center">
+                            Account is Immutable
+                          </Text>
+                          <Text size="xs" color="#666666" className="text-center ">
+                            No changes can be made
+                          </Text>
                         </HoverCard.Dropdown>
                       </HoverCard>
                     </Group>
                   </div>
                 ) : (
-                  <div className="flex text-sm font-bold text-gray-200">
+                  <div onClick={() => handleMakeStorageImmutable(accountDetails.storage_account.toString())} className="flex text-sm font-bold text-gray-200">
                     <Group justify="center">
                       <HoverCard shadow="md" closeDelay={700} withArrow>
                         <HoverCard.Target>
@@ -140,7 +182,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
                             <MdLockOpen className="text-gray-200 h-4 w-4" />
                           </UnstyledButton>
                         </HoverCard.Target>
-                        <HoverCard.Dropdown>
+                        <HoverCard.Dropdown bg={'#181c20'}>
                           <Text size="sm" className="text-center">
                             Account is Mutable
                           </Text>
@@ -157,14 +199,14 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
                 <FaHardDrive className="h-6 w-6 my-auto text-[#6d787e]" />
               </p>
               <div className="w-64 my-auto items-center">
-                <div className="flex-1 mx-4 bg-gray-200 rounded-full h-2">
+                <div className="flex-1 mx-4 bg-gray-200 rounded-full h-3">
                   <div
-                    className="bg-blue-600 h-2 rounded-full"
+                    className=" bg-gradient-to-b from-green-300 to-green-500 h-3 rounded-full"
                     style={{ width: `${usagePercentage}%` }}
                   ></div>
                 </div>
                 <p className="text-xs ml-5 mt-2 font-medium text-gray-200">
-                  {formatBytes(accountDetails.current_usage)} of{" "}
+                  {formatBytes(accountDetails.current_usage)} <span className="text-gray-400">of</span>{" "}
                   {formatBytes(accountDetails.reserved_bytes)}{" "}
                   <span className="font-medium">{`(${usagePercentage.toFixed(
                     2
@@ -204,10 +246,10 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
               </div>
             </div>
             <div className="ml-6">
-              {isOwner && <Upload selectedAccount={publicKey} />}
+              {isOwner && <Upload selectedAccount={publicKey} onUploadSuccess={fetchFiles} />}
             </div>
             <div className="ml-6">
-              {isOwner && <Create selectedAccount={publicKey} />}
+              {isOwner && <Create selectedAccount={publicKey} onUploadSuccess={fetchFiles} />}
             </div>
           </div>
         </div>

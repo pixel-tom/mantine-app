@@ -26,7 +26,7 @@ const CustomToast: React.FC<ToastProps> = ({
     if (show) {
       setIsVisible(true);
     } else if (!show && isVisible) {
-      setTimeout(() => setIsVisible(false), 300); // Delay to allow animation to complete
+      setTimeout(() => setIsVisible(false), 300);
     }
   }, [show, isVisible]);
 
@@ -42,23 +42,23 @@ const CustomToast: React.FC<ToastProps> = ({
 
   let color = "";
   let icon = <IconInfoCircle />;
-  let textColor = "text-black"; // default text color
+  let textColor = "text-black";
 
   switch (type) {
     case "success":
       color = "#11FA98";
       icon = <IconCheck />;
-      textColor = "text-gray-600";
+      textColor = "text-gray-200";
       break;
     case "error":
       color = "red";
       icon = <IconX />;
-      textColor = "text-red-600";
+      textColor = "text-gray-300";
       break;
     case "loading":
       color = "gray";
       icon = <IconLoader className="animate-spin" />;
-      textColor = "text-gray-600";
+      textColor = "text-gray-300";
       break;
   }
 
@@ -73,9 +73,9 @@ const CustomToast: React.FC<ToastProps> = ({
           color={color}
           title={type.charAt(0).toUpperCase() + type.slice(1)}
           icon={icon}
-          c="black"
+          c="white"
         >
-          <p className={`text-black ${textColor}`}>{message}</p>
+          <p className={`${textColor}`}>{message}</p>
         </Alert>
       )}
     </div>

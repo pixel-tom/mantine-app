@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import CreateStorageAccount from "@/components/NewDriveModal";
 import StorageAccounts from "@/components/Drives";
-import SwapInterface from "@/components/JupiterSwap";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import JupiterSwap from "@/components/JupiterSwap";
 
 interface NavbarProps {
   onAccountSelect: (publicKey: string) => void;
@@ -83,7 +83,7 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
           {isSwapVisible ? "Hide" : "Need $SHDW?"}
         </button>
         <div style={{ ...divStyle, marginTop: "16px" }}>
-          <SwapInterface />
+          <JupiterSwap />
         </div>
       </div>
     </div>
