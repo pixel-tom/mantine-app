@@ -25,7 +25,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     setSelectedAccount(publicKey);
   };
 
-  const navbarWidth = "w-[380px]";
+  const navbarWidth = "w-[370px]";
 
   return (
     <ConnectionProvider endpoint={endpoint}>
@@ -36,13 +36,13 @@ const App = ({ Component, pageProps }: AppProps) => {
               <Head>
                 <title>Scoop</title>
               </Head>
-              <div className="flex h-[100vh] w-[100vw] overflow-hidden bg-[#24292d]">
+              <div className="flex h-[100vh] w-[100vw] overflow-hidden bg-[#242424]">
                 <div className={navbarWidth}>
                   <Navbar onAccountSelect={handleAccountSelect} />
                 </div>
                 <div className="flex flex-col flex-grow h-[100vh]">
                   <Header />
-                  <main className="flex-grow overflow-auto py-2 px-6 bg-[#24292d]">
+                  <main className="flex-grow overflow-auto py-2 px-6 bg-[#242424]">
                     <Component {...pageProps} />
                   </main>
                 </div>

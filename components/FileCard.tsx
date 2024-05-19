@@ -87,7 +87,7 @@ const FileCard: React.FC<FileCardProps> = ({
   };
 
   return (
-    <div className="fade-in border border-[#cbcbcb] dark:border-[#3b3b3b] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-[#ededed] dark:bg-[#292e31]">
+    <div className="fade-in border border-[#3b3b3b] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 bg-[#2e2e2e]">
       <div
         className={`flex justify-center items-center overflow-hidden bg-[#363b3e]`}
         style={{ height: height }}
@@ -101,6 +101,7 @@ const FileCard: React.FC<FileCardProps> = ({
               height={200}
               layout="intrinsic"
               objectFit="contain"
+              loading="lazy"
               onError={() => setImageError(true)}
             />
           </a>
@@ -142,7 +143,7 @@ const FileCard: React.FC<FileCardProps> = ({
               </UnstyledButton>
             </Menu.Target>
 
-            <Menu.Dropdown bg="#181c20">
+            <Menu.Dropdown bg="#1b1b1b">
               <Menu.Label>Application</Menu.Label>
               <Menu.Item
                 leftSection={

@@ -5,12 +5,14 @@ import Image from "next/image";
 import { MdInfo } from "react-icons/md";
 import { useRouter } from "next/router";
 import { useToast } from "@/contexts/ToastContext";
+import { Button } from "@mantine/core";
+import { IconDownload, IconPlus } from "@tabler/icons-react";
 
 const CreateStorageAccount: React.FC = () => {
-  const [ accountName, setAccountName ] = useState<string>("");
-  const [ storageSize, setStorageSize ] = useState<number>(10);
-  const [ storageUnit, setStorageUnit ] = useState<string>("MB");
-  const [ showModal, setShowModal ] = useState<boolean>(false);
+  const [accountName, setAccountName] = useState<string>("");
+  const [storageSize, setStorageSize] = useState<number>(10);
+  const [storageUnit, setStorageUnit] = useState<string>("MB");
+  const [showModal, setShowModal] = useState<boolean>(false);
   const { showToast } = useToast();
   const { connection } = useConnection();
   const wallet = useWallet();
@@ -58,13 +60,14 @@ const CreateStorageAccount: React.FC = () => {
 
   return (
     <div>
-      <button
+      <Button
+        rightSection={<IconPlus size={14} />}
         onClick={() => setShowModal(true)}
-        className="pb-1 pt-0 px-3 text-center bg-gradient-to-tr from-[#363b3e] to-[#323232] text-[#11FA98] border border-[#11FA98] text-2xl rounded-lg shadow-sm hover:bg-[#303030]"
+        variant="default"
+        color="orange"
       >
-        +
-      </button>
-
+        <p className="text-gray-100">New</p>
+      </Button>
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 shadow-2xl">
           <div

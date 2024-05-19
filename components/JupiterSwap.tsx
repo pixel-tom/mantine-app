@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { VersionedTransaction } from "@solana/web3.js";
 import axios from "axios";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -10,8 +10,11 @@ import { TbArrowsTransferDown } from "react-icons/tb";
 import Link from "next/link";
 import { useToast } from "@/contexts/ToastContext";
 import TokenDropdown from "@/components/CustomDropdown";
+import { Button } from "@mantine/core";
 
-const JupiterSwap: React.FC = () => {
+const JupiterSwap: React.FC<{ shouldFetchBalance: boolean }> = ({
+  shouldFetchBalance,
+}) => {
   const { connection } = useConnection();
   const wallet = useWallet();
   const [inputToken, setInputToken] = useState(
@@ -61,7 +64,7 @@ const JupiterSwap: React.FC = () => {
     const inputTokenData = mintsData[inputToken];
     const outputTokenData = mintsData[outputToken];
     const inputTokenAmountLamports =
-        parseFloat(inputTokenAmount) * Math.pow(10, inputTokenData.decimals);
+      parseFloat(inputTokenAmount) * Math.pow(10, inputTokenData.decimals);
     const slippagePercentage = parseFloat(slippage) / 100;
 
     try {
@@ -121,7 +124,7 @@ const JupiterSwap: React.FC = () => {
         console.log(`https://solscan.io/tx/${txid}`);
       }
     } catch (error: any) {
-      showToast(`${error.message}`, 'error')
+      showToast(`${error.message}`, "error");
       console.error("Error performing token swap:", error);
     } finally {
       setIsLoading(false);
@@ -135,7 +138,7 @@ const JupiterSwap: React.FC = () => {
       >
         <div className="flex flex-col items-center justify-center">
           <div className="wrapper p-2  text-white">
-            <div className="flex flex-row justify-between mb-2 border border-[#222222] bg-[#363b3e] hover:bg-[#3c4245] py-2 px-3 rounded-lg shadow-md">
+            <div className="flex flex-row justify-between mb-2 border border-[#222222] bg-[#2e2e2e] hover:bg-[#3c4245] py-2 px-3 rounded-lg shadow-md">
               <div className="flex-1 my-auto">
                 <TokenDropdown
                   value={inputToken}
@@ -155,7 +158,10 @@ const JupiterSwap: React.FC = () => {
                     className="text-right pr-3 py-1 bg-transparent text-white text-lg font-semibold focus:outline-none focus:border-blue-500 text-align-right"
                   />
                   <div className="ml-auto pr-3">
-                    <WalletBalance searchMintAddress={inputTokenData?.mint} />
+                    <WalletBalance
+                      searchMintAddress={inputTokenData?.mint}
+                      shouldFetchBalance={shouldFetchBalance}
+                    />
                   </div>
                 </div>
               </div>
@@ -166,7 +172,7 @@ const JupiterSwap: React.FC = () => {
               <hr className="w-2/5 my-auto border-[#323b43] mx-auto" />
             </div>
 
-            <div className="flex flex-row justify-between mb-5 border border-[#222222] bg-[#363b3e] py-2 px-3 rounded-lg shadow-md">
+            <div className="flex flex-row justify-between mb-5 border border-[#222222] bg-[#2e2e2e] py-2 px-3 rounded-lg shadow-md">
               <div className="flex-1 my-auto">
                 <TokenDropdown
                   value={outputToken}
@@ -189,18 +195,26 @@ const JupiterSwap: React.FC = () => {
                     readOnly
                   />
                   <div className="ml-auto px-3">
-                    <WalletBalance searchMintAddress={outputTokenData?.mint} />
+                    <WalletBalance
+                      searchMintAddress={outputTokenData?.mint}
+                      shouldFetchBalance={shouldFetchBalance}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-            <button
+            <Button
               onClick={handleSwapTokens}
               disabled={isLoading}
-              className="font-semibold w-full text-gray-50 border border-[#11FA98] rounded-full px-4 py-3 shadow-inner shadow-bottom hover:bg-[#22272e] focus:outline-none"
+              variant="default"
+              color="black"
+              c={'white'}
+              w={'100%'}
+              size="lg"
+              radius={'xl'}
             >
-              <p className="">{isLoading ? "Swapping" : "Swap"}</p>
-            </button>
+              <p>{isLoading ? "Swapping" : "Swap"}</p>
+            </Button>
           </div>
           <div className="flex space-x-2 mt-2">
             <p className="text-xs text-gray-400">Powered by</p>

@@ -1,0 +1,13 @@
+.rowSelected {
+    background-color: var(--mantine-color-blue-light);
+  }
+
+.th {
+    color: #828282;
+
+}
+
+.td {
+  color: #f5f5f5;
+
+}

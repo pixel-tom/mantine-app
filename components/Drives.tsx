@@ -16,11 +16,11 @@ interface ToastState {
   type: "success" | "error" | "info" | "loading";
 }
 
-interface StorageAccountsProps {
+interface DriveItemProps {
   onAccountSelect: (publicKey: string) => void;
 }
 
-const StorageAccounts: React.FC<StorageAccountsProps> = ({
+const DriveItem: React.FC<DriveItemProps> = ({
   onAccountSelect,
 }) => {
   const { accounts, setAccounts, isLoading } = useStorageAccounts();
@@ -84,10 +84,10 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
   const SkeletonLoader = () => {
     return (
       <div className="animate-pulse space-y-4">
-        <div className="h-16 bg-[#24292d] rounded w-full"></div>
-        <div className="h-16 bg-[#24292d] rounded w-full"></div>
-        <div className="h-16 bg-[#24292d] rounded w-full"></div>
-        <div className="h-16 bg-[#24292d] rounded w-full"></div>
+        <div className="h-16 bg-[#2e2e2e] rounded w-full"></div>
+        <div className="h-16 bg-[#2e2e2e] rounded w-full"></div>
+        <div className="h-16 bg-[#2e2e2e] rounded w-full"></div>
+        <div className="h-16 bg-[#2e2e2e] rounded w-full"></div>
       </div>
     );
   };
@@ -127,4 +127,4 @@ const StorageAccounts: React.FC<StorageAccountsProps> = ({
   );
 };
 
-export default StorageAccounts;
+export default DriveItem;

@@ -1,19 +1,30 @@
-import React from "react";
+import { Card, Text } from "@mantine/core";
+import React, { FC } from "react";
 
 type FeatureCardProps = {
   title: string;
   description: string;
-  icon: React.ReactNode;
   color: string;
+  bgColor: string;
 };
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, color }) => {
+const FeatureCard: FC<FeatureCardProps> = ({
+  title,
+  description,
+  color,
+  bgColor,
+}) => {
   return (
-    <div className="flex flex-col justify-center p-6 rounded-lg shadow-md m-2 w-80" style={{ backgroundColor: color }}>
-      <div className="text-4xl text-gray-800 mb-2">{icon}</div>
-      <h2 className="text-gray-800 text-lg font-semibold mb-2">{title}</h2>
-      <p className="text-gray-700 text-sm">{description}</p>
-    </div>
+    <Card radius="md" withBorder bg={`${bgColor}`}>
+      <div>
+        <Text size="lg" fw={700} c={`${color}`}>
+          {title}
+        </Text>
+        <Text size="sm" c={`${color}`}>
+          {description}
+        </Text>
+      </div>
+    </Card>
   );
 };
 

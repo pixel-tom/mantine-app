@@ -7,9 +7,10 @@ import {
   rem,
   useMantineTheme,
   Center,
+  Button,
 } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
-import { IconDownload, IconX } from "@tabler/icons-react";
+import { IconDownload, IconPlus, IconX } from "@tabler/icons-react";
 import Image from "next/image";
 import { useSHDWDrive } from "@/contexts/ShadowDriveProvider";
 import classes from "@/styles/Dropzone.module.css";
@@ -20,18 +21,20 @@ interface UploadProps {
   onUploadSuccess: () => void;
 }
 
-const Upload: React.FC<UploadProps> = ({ selectedAccount, onUploadSuccess }) => {
-  const [ file, setFile ] = useState<File | null>(null);
-  const [ fileSize, setFileSize ] = useState<number | null>(null);
-  const [ fileName, setFileName ] = useState<string | null>(null);
-  const [ showModal, setShowModal ] = useState<boolean>(false);
+const Upload: React.FC<UploadProps> = ({
+  selectedAccount,
+  onUploadSuccess,
+}) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [fileSize, setFileSize] = useState<number | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const { drive } = useSHDWDrive();
   const { showToast } = useToast();
   const wallet = useWallet();
   const theme = useMantineTheme();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const openRef = useRef<() => void>(null);
-  
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -75,18 +78,20 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount, onUploadSuccess }) => 
 
   return (
     <div className="relative">
-      <button
+      <Button
+        rightSection={<IconPlus size={14} />}
         onClick={() => setShowModal(true)}
-        className="font-medium text-sm py-2 px-5 my-auto border border-[#11FA98] bg-[#11FA98] text-[#24292d] rounded-lg shadow-md hover:bg-[#5bffbb] hover:border hover:border-[#11FA98]"
+        variant="filled"
+        color="black"
       >
-        + Upload
-      </button>
+        Upload
+      </Button>
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
           <div
             ref={modalRef}
-            className="bg-[#292e31] max-w-[800px] w-full rounded-lg shadow-lg p-10 relative"
+            className="bg-[#242424] max-w-[800px] w-full rounded-lg shadow-lg p-10 relative"
           >
             <form
               onSubmit={(e) => {
@@ -111,7 +116,7 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount, onUploadSuccess }) => 
                       setFileName(selectedFile ? selectedFile.name : null);
                       setFileSize(selectedFile ? selectedFile.size : null);
                     }}
-                    className={`border border-gray-400 border-dashed bg-gradient-to-br from-[#5D616D]/50 to-[#222935]/50 px-16 py-14 rounded-lg ${classes.dropzone}`}
+                    className={`border border-gray-600 border-dashed bg-gradient-to-br from-[#4a4d56]/30 to-[#1a1f28]/30 px-16 py-14 rounded-lg ${classes.dropzone}`}
                     accept={[
                       MIME_TYPES.png,
                       MIME_TYPES.pdf,
@@ -183,12 +188,13 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount, onUploadSuccess }) => 
                     </div>
                   </Dropzone>
                   <Center>
-                    <button
+                    <Button
                       className={`px-5 py-2 bg-[#11FA98] text-gray-800 text-sm font-semibold rounded-lg ${classes.control}`}
                       onClick={() => openRef.current?.()}
+                      variant="default"
                     >
                       Select files
-                    </button>
+                    </Button>
                   </Center>
                 </div>
                 <div className="flex mt-10 space-x-2 max-h-20 overflow-auto">
@@ -207,12 +213,13 @@ const Upload: React.FC<UploadProps> = ({ selectedAccount, onUploadSuccess }) => 
                 <p className="mt-auto text-gray-500 text-xs">
                   There are no fees for uploading files to ShdwDrive.
                 </p>
-                <button
+                <Button
+                  variant="filled"
+                  color="black"
                   type="submit"
-                  className="py-2 px-6 border border-[#11FA98] font-semibold text-sm text-white rounded-lg shadow"
                 >
                   Upload
-                </button>
+                </Button>
               </div>
             </form>
           </div>

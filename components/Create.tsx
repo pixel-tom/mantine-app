@@ -7,10 +7,11 @@ import {
   usefulFile1,
   usefulFile2,
 } from "@/templates";
-import { Menu, rem } from "@mantine/core";
+import { Button, Menu, rem } from "@mantine/core";
 import {
   IconArrowsLeftRight,
   IconMessageCircle,
+  IconPlus,
   IconSettings,
 } from "@tabler/icons-react";
 import CodeMirror from "@uiw/react-codemirror";
@@ -99,17 +100,23 @@ const Create: React.FC<CreateProps> = ({
     <div className="relative">
       <Menu position="bottom-end" offset={11} withArrow shadow="lg" width={200}>
         <Menu.Target>
-          <button className="font-semibold text-sm py-2 px-5 my-auto border border-[#11FA98]  text-gray-200 rounded-lg shadow-md hover:bg-[#181c20] hover:text-gray-200 hover:border hover:border-[#11FA98]">
-            + Create
-          </button>
+          <Button
+            rightSection={<IconPlus size={14} />}
+            variant="default"
+          >
+            <p className="text-gray-100">Create</p>
+          </Button>
         </Menu.Target>
 
-        <Menu.Dropdown bg="#181c20">
+        <Menu.Dropdown bg={'#1b1b1b'}>
           <Menu.Label>Create</Menu.Label>
           <Menu.Item
             onClick={() => setShowModal(true)}
             leftSection={
-              <IconSettings style={{ width: rem(14), height: rem(14) }} />
+              <IconSettings
+                color={"turquoise"}
+                style={{ width: rem(14), height: rem(14) }}
+              />
             }
           >
             Template File
@@ -118,8 +125,17 @@ const Create: React.FC<CreateProps> = ({
             leftSection={
               <IconMessageCircle style={{ width: rem(14), height: rem(14) }} />
             }
+            disabled
           >
-            Copy Link
+            Mint NFT
+          </Menu.Item>
+          <Menu.Item
+            leftSection={
+              <IconMessageCircle style={{ width: rem(14), height: rem(14) }} />
+            }
+            disabled
+          >
+            Mint SPL Token
           </Menu.Item>
           <Menu.Divider />
           <Menu.Item
@@ -138,7 +154,7 @@ const Create: React.FC<CreateProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
           <div
             ref={modalRef}
-            className="bg-[#292e31] max-w-[800px] w-full rounded-lg shadow-lg p-10 relative"
+            className="bg-[#242424] max-w-[800px] w-full rounded-lg shadow-lg p-10 relative"
           >
             <form
               onSubmit={(e) => {
@@ -208,12 +224,16 @@ const Create: React.FC<CreateProps> = ({
                 <p className="mt-auto text-gray-500 text-xs">
                   There are no fees for uploading files to ShdwDrive.
                 </p>
-                <button
+                <Button
                   type="submit"
+                  variant="outline"
+                  color="orange"
+                  size="md"
+                  c='white'
                   className="py-2 px-6 border border-[#11FA98] text-white text-sm rounded-lg shadow "
                 >
                   Upload
-                </button>
+                </Button>
               </div>
             </form>
           </div>

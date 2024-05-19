@@ -65,7 +65,7 @@ const FileMenu: FC<FileMenuProps> = ({ file, publicKey }) => {
             </div>
           </UnstyledButton>
         </Menu.Target>
-        <Menu.Dropdown bg="#181c20">
+        <Menu.Dropdown bg="#1b1b1b">
           <Menu.Label>{file.name}</Menu.Label>
           <Menu.Item
             leftSection={

@@ -41,22 +41,26 @@ const CustomToast: React.FC<ToastProps> = ({
   }, [isVisible, type, onClose]);
 
   let color = "";
+  let titleColor = "";
   let icon = <IconInfoCircle />;
   let textColor = "text-black";
 
   switch (type) {
     case "success":
       color = "#11FA98";
+      titleColor = "#272727";
       icon = <IconCheck />;
       textColor = "text-gray-200";
       break;
     case "error":
       color = "red";
+      titleColor = "#f5f5f5";
       icon = <IconX />;
       textColor = "text-gray-300";
       break;
     case "loading":
       color = "gray";
+      titleColor = "#f5f5f5";
       icon = <IconLoader className="animate-spin" />;
       textColor = "text-gray-300";
       break;
@@ -73,7 +77,7 @@ const CustomToast: React.FC<ToastProps> = ({
           color={color}
           title={type.charAt(0).toUpperCase() + type.slice(1)}
           icon={icon}
-          c="white"
+          c={`${titleColor}`}
         >
           <p className={`${textColor}`}>{message}</p>
         </Alert>

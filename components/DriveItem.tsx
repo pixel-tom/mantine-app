@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 import { PublicKey } from "@solana/web3.js";
-import { Menu, rem, UnstyledButton } from "@mantine/core";
+import { Menu, Pill, rem, UnstyledButton } from "@mantine/core";
 import { IconSettings, IconTrash } from "@tabler/icons-react";
 import { useToast } from "@/contexts/ToastContext";
 import { useSHDWDrive } from "@/contexts/ShadowDriveProvider";
 import { useWallet } from "@solana/wallet-adapter-react";
 
-interface StorageAccountItemProps {
+interface DriveItemProps {
   account: {
     publicKey: PublicKey;
     details?: any;
@@ -16,7 +16,7 @@ interface StorageAccountItemProps {
   formatBytes: (bytes: number, decimals?: number) => string;
 }
 
-const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
+const DriveItem: React.FC<DriveItemProps> = ({
   account,
   onClick,
   deleteStorageAccount,
@@ -50,7 +50,7 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
   );
 
   return (
-    <li className="py-5 relative hover:bg-[#24292d]  focus:border focus:border-black focus-visible:border focus-visible:border-black rounded-md">
+    <li className="py-5 relative hover:bg-[#242424]  focus:border focus:border-black focus-visible:border focus-visible:border-black rounded-md">
       <div className="flex items-center justify-between px-3">
         <div className="flex space-x-3">
           <div
@@ -61,9 +61,7 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
           </div>
         </div>
         <div className="flex space-x-3 items-center">
-          <p className="px-3 py-1 mr-1 my-auto text-[10px] font-bold rounded-full bg-gradient-to-tr from-[#363b3e] to-[#323232] text-blue-200 shadow-sm">
-            {formatBytes(account.details.storage.toNumber())}
-          </p>
+          
           <Menu
             position="bottom-end"
             offset={11}
@@ -114,7 +112,7 @@ const StorageAccountItem: React.FC<StorageAccountItemProps> = ({
   );
 };
 
-const MemoizedStorageAccountItem = React.memo(StorageAccountItem);
-MemoizedStorageAccountItem.displayName = "StorageAccountItem";
+const MemoizedDriveItem = React.memo(DriveItem);
+MemoizedDriveItem.displayName = "StorageAccountItem";
 
-export default MemoizedStorageAccountItem;
+export default MemoizedDriveItem;

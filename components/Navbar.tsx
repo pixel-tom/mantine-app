@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CreateStorageAccount from "@/components/NewDriveModal";
-import StorageAccounts from "@/components/Drives";
+import Drives from "@/components/Drives";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import JupiterSwap from "@/components/JupiterSwap";
@@ -47,7 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
       style={{
         maxWidth: "380px",
         width: "100%",
-        backgroundColor: "#181c20",
+        backgroundColor: "#1b1b1b",
         color: "#fff",
       }}
     >
@@ -59,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
       >
         <Image
           src={
-            "https://assets-global.website-files.com/653ae95e36bd81f87299010a/653c21a410b274a916b31918_ShdwDrive_WhiteGreen_wGenGo.svg"
+            "https://assets-global.website-files.com/653ae95e36bd81f87299010a/653af7770c7052f674db89ad_ShdwDrive_AllWhite_wGenGo.svg"
           }
           alt={""}
           height={50}
@@ -73,7 +73,7 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
       </div>
       <hr className="mx-auto w-11/12 border-gray-700" />
       <div className="flex-grow overflow-y-auto mt-3">
-        <StorageAccounts onAccountSelect={onAccountSelect} />
+        <Drives onAccountSelect={onAccountSelect} />
       </div>
       <div className="mt-auto">
         <button
@@ -83,7 +83,7 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
           {isSwapVisible ? "Hide" : "Need $SHDW?"}
         </button>
         <div style={{ ...divStyle, marginTop: "16px" }}>
-          <JupiterSwap />
+          <JupiterSwap shouldFetchBalance={isSwapVisible} />
         </div>
       </div>
     </div>

@@ -152,7 +152,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
                 <span className="text-gray-500 text-xs mr-1">Owner</span>{" "}
                 {formatAddress(accountDetails.owner1.toString())}
               </p>
-              <p className="py-2 px-4 bg-none border border-[#11FA98] text-black text-sm font-semibold rounded-lg shadow-md">
+              <p className="py-2 px-4 bg-none border border-gray-400 text-black text-sm font-semibold rounded-[5px] shadow-md">
                 {accountDetails.immutable ? (
                   <div className="flex text-sm font-bold text-gray-200">
                     <Group justify="center">
@@ -201,7 +201,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
               <div className="w-64 my-auto items-center">
                 <div className="flex-1 mx-4 bg-gray-200 rounded-full h-3">
                   <div
-                    className=" bg-gradient-to-b from-green-300 to-green-500 h-3 rounded-full"
+                    className=" bg-gradient-to-b from-gray-300 to-gray-500 h-3 rounded-full"
                     style={{ width: `${usagePercentage}%` }}
                   ></div>
                 </div>
@@ -217,14 +217,14 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
           </div>
         </div>
       </div>
-      <div className="border border-[#323b43] shadow overflow-hidden rounded-lg px-6 pt-3 fade-in">
+      <div className="border border-[#2e2e2e] shadow overflow-hidden rounded-lg px-6 pt-3 fade-in">
         <div className="flex flex-row justify-between pt-2">
           <h4 className="text-lg my-auto mb-2">Files</h4>
           <div className="flex">
             <div className="flex flex-row my-auto">
               {viewMode === "grid" && (
                 <Slider
-                  color={"#11FA98"}
+                  color={"orange"}
                   defaultValue={4}
                   max={10}
                   min={3}
@@ -245,11 +245,11 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
                 </button>
               </div>
             </div>
-            <div className="ml-6">
-              {isOwner && <Upload selectedAccount={publicKey} onUploadSuccess={fetchFiles} />}
-            </div>
-            <div className="ml-6">
+            <div className="ml-4">
               {isOwner && <Create selectedAccount={publicKey} onUploadSuccess={fetchFiles} />}
+            </div>
+            <div className="ml-4">
+              {isOwner && <Upload selectedAccount={publicKey} onUploadSuccess={fetchFiles} />}
             </div>
           </div>
         </div>
@@ -260,7 +260,7 @@ const AccountDetails: FC<{ publicKey: string }> = ({ publicKey }) => {
         ) : viewMode === "grid" ? (
           <div
             style={gridStyle}
-            className="grid gap-4 mt-4 fade-in overflow-auto"
+            className="grid gap-4 mt-8 fade-in overflow-auto"
           >
             {files.map((file, index) => (
               <FileCard

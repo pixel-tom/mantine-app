@@ -10,20 +10,21 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 const SOL_MINT_ADDRESS = "So11111111111111111111111111111111111111112";
 
-type MyComponentProps = {
+type WalletBalanceProps = {
   searchMintAddress: string;
+  shouldFetchBalance: boolean;
 };
 
-const MyComponent: React.FC<MyComponentProps> = ({ searchMintAddress }) => {
+const WalletBalance: React.FC<WalletBalanceProps> = ({ searchMintAddress, shouldFetchBalance }) => {
   const walletAddress = useWallet().publicKey?.toString();
   const [tokenBalance, setTokenBalance] = useState<number | null>(null);
   const { connection } = useConnection();
 
   useEffect(() => {
-    if (walletAddress) {
+    if (shouldFetchBalance && walletAddress) {
       getTokenAccounts(walletAddress, searchMintAddress, connection);
     }
-  }, [walletAddress, searchMintAddress, connection]);
+  }, [walletAddress, searchMintAddress, connection, shouldFetchBalance]);
 
   async function getTokenAccounts(
     walletAddress: string,
@@ -83,4 +84,4 @@ const MyComponent: React.FC<MyComponentProps> = ({ searchMintAddress }) => {
   );
 };
 
-export default MyComponent;
+export default WalletBalance;
