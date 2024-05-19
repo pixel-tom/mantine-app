@@ -71,7 +71,7 @@ const Navbar: React.FC<NavbarProps> = ({ onAccountSelect }) => {
         <h1 className="font-semibold text-gray-200">My Drives</h1>
         <CreateStorageAccount />
       </div>
-      <hr className="mx-auto w-11/12 border-gray-700" />
+      <hr className="mx-auto w-11/12 border-[#2e2e2e]" />
       <div className="flex-grow overflow-y-auto mt-3">
         <Drives onAccountSelect={onAccountSelect} />
       </div>

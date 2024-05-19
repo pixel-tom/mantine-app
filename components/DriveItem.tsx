@@ -50,12 +50,12 @@ const DriveItem: React.FC<DriveItemProps> = ({
   );
 
   return (
-    <li className="py-5 relative hover:bg-[#242424]  focus:border focus:border-black focus-visible:border focus-visible:border-black rounded-md">
+    <li className="py-3 my-2 relative hover:bg-[#242424]  focus:border focus:border-black focus-visible:border focus-visible:border-black rounded-md">
       <div className="flex items-center justify-between px-3">
         <div className="flex space-x-3">
           <div
             onClick={() => onClick(account.publicKey.toString())}
-            className="text-sm p-1 font-semibold text-gray-100 hover:cursor-pointer"
+            className="text-sm p-1 font-medium text-gray-100 hover:cursor-pointer"
           >
             {account.details.identifier}
           </div>
@@ -80,7 +80,7 @@ const DriveItem: React.FC<DriveItemProps> = ({
               </UnstyledButton>
             </Menu.Target>
 
-            <Menu.Dropdown bg="#24292d">
+            <Menu.Dropdown bg="#2e2e2e">
               <Menu.Label>{account.details.identifier}</Menu.Label>
               <Menu.Item
                 onClick={() =>

@@ -83,11 +83,11 @@ const DriveItem: React.FC<DriveItemProps> = ({
 
   const SkeletonLoader = () => {
     return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-16 bg-[#2e2e2e] rounded w-full"></div>
-        <div className="h-16 bg-[#2e2e2e] rounded w-full"></div>
-        <div className="h-16 bg-[#2e2e2e] rounded w-full"></div>
-        <div className="h-16 bg-[#2e2e2e] rounded w-full"></div>
+      <div className="animate-pulse space-y-4 mt-2">
+        <div className="h-12 bg-[#2e2e2e] rounded w-full"></div>
+        <div className="h-12 bg-[#2e2e2e] rounded w-full"></div>
+        <div className="h-12 bg-[#2e2e2e] rounded w-full"></div>
+        <div className="h-12 bg-[#2e2e2e] rounded w-full"></div>
       </div>
     );
   };
